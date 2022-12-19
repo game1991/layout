@@ -1,0 +1,17 @@
+syntax="proto3";
+
+package helloworld.api.v1;
+
+option go_package = "api/proto/v1;v1";
+
+service Greeter {
+	rpc SayHello(HelloworldRequset) returns (HelloworldReply){}
+}
+
+message HelloworldRequset {
+	string name=1;
+}
+
+message HelloworldReply {
+	string message =1;
+}

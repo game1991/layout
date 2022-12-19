@@ -1,0 +1,72 @@
+syntax="proto3";
+
+package helloworld.api.v1;
+
+option go_package = "api/proto/v1;v1";
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+service UserService {
+	rpc Login (LoginRequest) returns (LoginResponse){
+		// option type is http
+		option (google.api.http) = {
+			// this is url, for RESTfull/JSON api and method
+			// this line means when a HTTP post request comes with "/v1/sayHello" call this rpc method over this service
+			  post: "/v1/login"
+			  body: "*"
+			};
+	};
+	rpc UpdateInfo (UpdateInfoRequest) returns (UpdateInfoResponse){
+		// option type is http
+		option (google.api.http) = {
+			// this is url, for RESTfull/JSON api and method
+			// this line means when a HTTP post request comes with "/v1/sayHello" call this rpc method over this service
+			  post: "/v1/user/updateInfo"
+			  body: "*"
+			};
+	};
+	rpc Notify (NotifyRequest) returns (NotifyResponse);
+}
+
+message UserInfo {
+	uint32 id=1;
+	string user_name=2;
+	string nick_name =3;
+	uint32 age =4;
+	enum Gender {
+		SECRET=0;
+		MALE=1;
+		FEMALE=2;
+	}
+	Gender gender=5;
+}
+
+message LoginRequest {
+	optional string user_name = 1; // 用户名
+	optional string password =2; // 密码
+}
+
+message LoginResponse{
+	google.protobuf.Timestamp logined_at =1; // 登录时间
+}
+
+message UpdateInfoRequest {
+	
+}
+
+message UpdateInfoResponse {
+	
+}
+
+message NotifyRequest {
+	optional string msg=1;
+	oneof notify_style {
+		string email =2;
+		string phone =3;
+	}
+}
+
+message NotifyResponse {
+	bool isSend =1;
+}

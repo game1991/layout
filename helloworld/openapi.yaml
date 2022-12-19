@@ -1,0 +1,67 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: UserService API
+    version: 0.0.1
+paths:
+    /v1/login:
+        post:
+            tags:
+                - UserService
+            operationId: UserService_Login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.api.v1.LoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.api.v1.LoginResponse'
+    /v1/user/updateInfo:
+        post:
+            tags:
+                - UserService
+            operationId: UserService_UpdateInfo
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/helloworld.api.v1.UpdateInfoRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/helloworld.api.v1.UpdateInfoResponse'
+components:
+    schemas:
+        helloworld.api.v1.LoginRequest:
+            type: object
+            properties:
+                userName:
+                    type: string
+                password:
+                    type: string
+        helloworld.api.v1.LoginResponse:
+            type: object
+            properties:
+                loginedAt:
+                    type: string
+                    format: date-time
+        helloworld.api.v1.UpdateInfoRequest:
+            type: object
+            properties: {}
+        helloworld.api.v1.UpdateInfoResponse:
+            type: object
+            properties: {}
+tags:
+    - name: UserService

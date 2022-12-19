@@ -3,8 +3,8 @@ package service
 import "context"
 
 
-// UserServ ...
-type UserServ interface{
+// UserSrv ...
+type UserSrv interface{
 	Create(ctx context.Context,)
 }
 

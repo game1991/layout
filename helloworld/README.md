@@ -88,3 +88,9 @@ internal 目录下的包，不允许被其他项目中进行导入，这是在 G
 ### /test
 
 额外的外部测试应用程序和测试数据。
+
+## 参考文献
+
+- [Gin + Grpc同时使用（监听同一端口）_Bearki-CN的博客-CSDN博客_gin grpc](https://blog.csdn.net/weixin_45985984/article/details/124071909)
+- [三、grpc-gateway 应用 - 4. grpc-gateway gRPC+gRPC Gateway 能不能不用证书？ - 《Golang Gin 实践》 - 技术池(jishuchi.com)](https://www.jishuchi.com/read/gin-practice/3809)
+- [项目结构 | Kratos (go-kratos.dev)](https://go-kratos.dev/docs/intro/layout)

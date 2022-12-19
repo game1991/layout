@@ -1,0 +1,20 @@
+# * test eol=lf
+# text=auto
+# text eol=lf
+text eol=lf
+*.txt text
+*.sh text eol=lf
+*.go eol=lf
+*.proto eol=lf
+Makefile eol=lf
+.gitignore eol=lf
+go.mod eol=lf
+go.sum eol=lf
+.gitattributes eol=lf
+
+*.jpg -text
+*.jpeg -text
+*.JPEG -text
+*.JPG -text
+*.png -text
+*.PNG -text

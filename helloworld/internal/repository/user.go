@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"helloworld/dal/model"
 	"helloworld/dal/query"
@@ -20,11 +21,13 @@ const (
 
 // User ...
 type User struct {
-	ID       uint32
-	Name     string
-	Age      uint32
-	Gender   Gender
-	Birthday sql.NullTime
+	ID        uint32       `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	Name      string       `gorm:"column:name;not null" json:"name"`
+	Age       uint32       `gorm:"column:age;not null" json:"age"`
+	Gender    uint32       `gorm:"column:gender;not null" json:"gender"`
+	Birthday  sql.NullTime `gorm:"column:birthday" json:"birthday"`
+	CreatedAt time.Time    `gorm:"column:created_at;not null" json:"created_at"`
+	UpdatedAt time.Time    `gorm:"column:updated_at;not null" json:"updated_at"`
 }
 
 // QueryUsers ...
@@ -41,6 +44,11 @@ type UserInter interface {
 	FindByID(ctx context.Context, id uint32) (*User, error)
 	Search(ctx context.Context, limit, offset uint64, in *QueryUsers) ([]*User, error)
 	DeleteByIDs(ctx context.Context, ids []uint32) error
+}
+
+// NewUserInter ...
+func NewUserInter(q *query.Query) UserInter {
+	return &user{q: q}
 }
 
 type user struct {
