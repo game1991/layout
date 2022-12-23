@@ -7,16 +7,21 @@ import "google/protobuf/duration.proto";
 
 
 message Server {
-	message HTTP {
-	  string network = 1;
-	  string addr = 2;
-	  google.protobuf.Duration timeout = 3;
-	}
-	message GRPC {
-	  string network = 1;
-	  string addr = 2;
-	  google.protobuf.Duration timeout = 3;
-	}
-	HTTP http = 1;
-	GRPC grpc = 2;
-  }
+	string addr=1;
+	google.protobuf.Duration timeout = 2;
+}
+
+message Session {
+	string RedisConnectType=1;
+	string Host=2;
+	int32 Port=3;
+	string Password=4;
+	int32 DbNumber=5;
+	int32 MaxIdle=6;
+	string Secret=7;
+	repeated string SessionName=8;
+	string Path=9;
+	int32 MaxAge=10;
+	bool HTTPOnly=11;
+	int32 SameSite=12;
+}

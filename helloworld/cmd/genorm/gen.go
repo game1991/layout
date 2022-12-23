@@ -30,7 +30,7 @@ var GenORMCmd = &cobra.Command{
 			db  *gorm.DB
 			err error
 		)
-		if db, err = store.NewMySQL(store.Config{
+		if db, _, err = store.NewMySQL(store.Config{
 			//DSN: "root:Xb462415@(127.0.0.1:3306)/demo?charset=utf8mb4&parseTime=True&loc=Local",
 			DSN: "root:root@(127.0.0.1:3306)/helloworld?charset=utf8mb4&parseTime=True&loc=Local",
 		}); err != nil {

@@ -38,19 +38,19 @@ ARCH := $(if $(GOARCH),$(GOARCH),$(shell go env GOARCH))
 #os	:=$(shell expr substr $(shell uname -s) 1 5)
 #ifeq ($(os),MINGW)
 ifeq ($(OS), windows)
-GOBIN :=$(subst \,/,$(GOBIN))
-GOPATH :=$(subst \,/,$(GOPATH))
-$(info path alter $$GOBIN=$(GOBIN))
-$(info path alter $$GOPATH=$(GOPATH))
+# GOBIN :=$(subst \,/,$(GOBIN))
+# GOPATH :=$(subst \,/,$(GOPATH))
+# $(info path alter $$GOBIN=$(GOBIN))
+# $(info path alter $$GOPATH=$(GOPATH))
 
-ifneq ($(GOBIN),)
-GOBIN :=/$(shell echo "$(GOBIN)" | cut -d';' -f1 | sed 's/://g')
-endif
-ifneq ($(GOPATH),)
-GOPATH :=/$(shell echo "$(GOPATH)" | cut -d';' -f1 | sed 's/://g')
-endif
-$(info cut first $$GOBIN=$(GOBIN))
-$(info cut first $$GOPATH=$(GOPATH))
+# ifneq ($(GOBIN),)
+# GOBIN :=/$(shell echo "$(GOBIN)" | cut -d';' -f1 | sed 's/://g')
+# endif
+# ifneq ($(GOPATH),)
+# GOPATH :=/$(shell echo "$(GOPATH)" | cut -d';' -f1 | sed 's/://g')
+# endif
+# $(info cut first $$GOBIN=$(GOBIN))
+# $(info cut first $$GOPATH=$(GOPATH))
 
 #the `find.exe` is different from `find` in bash/shell.
 #to see https://docs.microsoft.com/en-us/windows-server/administration/windows-commands/find.
@@ -73,7 +73,15 @@ $(info $$BIN=$(BIN))
 $(info $$INTERNAL_PROTO_FILES=$(INTERNAL_PROTO_FILES))
 $(info $$API_PROTO_FILES=$(API_PROTO_FILES))
 
-.PHONY: info build config proto swagger
+.PHONY: init info print build config proto swagger
+
+install:
+	@go install github.com/golang/protobuf/protoc-gen-go
+	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
+	@go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
+	@go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
+	@go install github.com/go-bindata/go-bindata/...
+	@echo "install finished"
 
 info:
 	@echo $(GOBIN)
@@ -81,6 +89,7 @@ info:
 	@echo $(BIN)
 	@echo $(INTERNAL_PROTO_FILES)
 	@echo $(API_PROTO_FILES)
+
 build:
 	chmod -R a+rx ./build/scripts
 	/bin/sh -c  "             \
@@ -115,3 +124,11 @@ proto:
 		   --grpc-gateway_out=paths=source_relative:./api \
 	       $(API_PROTO_FILES)
 swagger:
+	@go-bindata --nocompress -pkg swagger -o pkg/swagger/data.go third_party/swagger-ui/...
+	@protoc $(API_PROTO_FILES) \
+			--proto_path=./api \
+			--proto_path=./third_party \
+			--swagger_out=logtostderr=true:./api/openapi/v1 \
+			--experimental_allow_proto3_optional
+		 
+			

@@ -7,6 +7,8 @@ import (
 
 	"helloworld/dal/model"
 	"helloworld/dal/query"
+
+	"gorm.io/gen"
 )
 
 // Gender ...
@@ -37,6 +39,13 @@ type QueryUsers struct {
 	Gender Gender
 }
 
+// Condition ...
+type Condition struct {
+	Name     string
+	Age      uint32
+	Birthday sql.NullTime
+}
+
 // UserInter ...
 type UserInter interface {
 	Create(ctx context.Context, user *User) error
@@ -44,6 +53,7 @@ type UserInter interface {
 	FindByID(ctx context.Context, id uint32) (*User, error)
 	Search(ctx context.Context, limit, offset uint64, in *QueryUsers) ([]*User, error)
 	DeleteByIDs(ctx context.Context, ids []uint32) error
+	FindByCondition(ctx context.Context, cond *Condition) ([]*User, error)
 }
 
 // NewUserInter ...
@@ -68,6 +78,18 @@ func CreateUser(u *User) (mu *model.User) {
 	return
 }
 
+func convertToUser(u *model.User) *User {
+	return &User{
+		ID:        u.ID,
+		Name:      u.Name,
+		Age:       u.Age,
+		Gender:    u.Gender,
+		Birthday:  u.Birthday,
+		CreatedAt: u.CreatedAt,
+		UpdatedAt: u.UpdatedAt,
+	}
+}
+
 func (u *user) Create(ctx context.Context, user *User) error {
 	return u.q.User.WithContext(ctx).Create(CreateUser(user))
 }
@@ -86,4 +108,53 @@ func (u *user) Search(ctx context.Context, limit uint64, offset uint64, in *Quer
 
 func (u *user) DeleteByIDs(ctx context.Context, ids []uint32) error {
 	panic("not implemented") // TODO: Implement
+}
+
+func (u *user) FindByCondition(ctx context.Context, cond *Condition) ([]*User, error) {
+	// 条件查询
+	if cond == nil {
+		return nil, ErrBadParam
+	}
+
+	sub := u.q.User.WithContext(ctx).Scopes(
+		u.withUserName(cond.Name),
+		u.withAge(cond.Age),
+		u.withBirthday(&cond.Birthday),
+	)
+	res, err := sub.Find()
+	if err != nil {
+		return nil, err
+	}
+	var ant []*User
+	for _, item := range res {
+		ant = append(ant, convertToUser(item))
+	}
+	return ant, nil
+}
+
+func (u *user) withUserName(name string) func(tx gen.Dao) gen.Dao {
+	return func(tx gen.Dao) gen.Dao {
+		if name != "" {
+			return tx.Where(u.q.User.Name.Eq(name))
+		}
+		return tx
+	}
+}
+
+func (u *user) withAge(age uint32) func(tx gen.Dao) gen.Dao {
+	return func(tx gen.Dao) gen.Dao {
+		if age != 0 {
+			return tx.Where(u.q.User.Age.Eq(age))
+		}
+		return tx
+	}
+}
+
+func (u *user) withBirthday(birthday *sql.NullTime) func(tx gen.Dao) gen.Dao {
+	return func(tx gen.Dao) gen.Dao {
+		if birthday != nil {
+			return tx.Where(u.q.User.Birthday.Eq(birthday))
+		}
+		return tx
+	}
 }

@@ -3,6 +3,9 @@ package build
 // Version is the app-global version string, which should be substituted with a
 // real value during build.
 var Version = "UNKNOWN"
+
+// Name is the name of the compiled software.
+var Name = ""
 var Branch = ""
 var Tag = ""
 var LastTime = ""
