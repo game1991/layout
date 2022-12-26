@@ -57,7 +57,7 @@ ifeq ($(OS), windows)
 #changed to use git-bash.exe to run find cli or other cli friendly, caused of every developer has a Git.
 #Git_Bash= $(subst cmd\,bin\bash.exe,$(dir $(shell where git)))
 # Git_Bash=/$(subst \,/,$(subst cmd\,bin\bash.exe,$(dir $(shell where git | grep cmd))))
-$(info $$dir=$(subst cmd\git.exe,bin\bash.exe,$(shell where git | grep cmd | sed 's/://g')))
+# $(info $$dir=$(subst cmd\git.exe,bin\bash.exe,$(shell where git | grep cmd | sed 's/://g')))
 $(info $$Git_Bash=/$(subst \,/,$(subst cmd\git.exe,bin\bash.exe,$(shell where git | grep cmd | sed 's/://g'))))
 Git_Bash=/$(subst \,/,$(subst cmd\git.exe,bin\bash.exe,$(shell where git | grep cmd | sed 's/://g')))
 INTERNAL_PROTO_FILES=$(shell '$(Git_Bash)' -c "find internal -name *.proto")
@@ -68,19 +68,34 @@ API_PROTO_FILES=$(shell find api -name *.proto)
 endif
 
 BIN ?=helloworld
+# service name
+NAME ?=helloworld
 
 $(info $$BIN=$(BIN))
-$(info $$INTERNAL_PROTO_FILES=$(INTERNAL_PROTO_FILES))
-$(info $$API_PROTO_FILES=$(API_PROTO_FILES))
+# $(info $$INTERNAL_PROTO_FILES=$(INTERNAL_PROTO_FILES))
+# $(info $$API_PROTO_FILES=$(API_PROTO_FILES))
 
 .PHONY: init info print build config proto swagger
 
 install:
-	@go install github.com/golang/protobuf/protoc-gen-go
-	@go install google.golang.org/grpc/cmd/protoc-gen-go-grpc
-	@go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-grpc-gateway
-	@go install github.com/grpc-ecosystem/grpc-gateway/protoc-gen-swagger
-	@go install github.com/go-bindata/go-bindata/...
+	@go get \
+		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
+		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
+		google.golang.org/protobuf/cmd/protoc-gen-go \
+		google.golang.org/grpc/cmd/protoc-gen-go-grpc \
+		github.com/fullstorydev/grpcurl/cmd/grpcurl/... \
+		github.com/go-bindata/go-bindata/... \
+		github.com/elazarl/go-bindata-assetfs/... 
+
+	@go install \
+    	github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
+    	github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
+    	google.golang.org/protobuf/cmd/protoc-gen-go \
+    	google.golang.org/grpc/cmd/protoc-gen-go-grpc \
+		github.com/fullstorydev/grpcurl/cmd/grpcurl \
+		github.com/go-bindata/go-bindata \
+		github.com/elazarl/go-bindata-assetfs
+
 	@echo "install finished"
 
 info:
@@ -97,6 +112,7 @@ build:
         ARCH=$(ARCH)          \
         OS=$(OS)              \
         VERSION=$(VERSION)    \
+		NAME=$(NAME)          \
 		BRANCH=$(BRANCH)      \
 		TAG=$(TAG)            \
 		LASTTIME=$(LASTTIME)    \
@@ -116,19 +132,21 @@ config:
  	       --go_out=paths=source_relative:./internal \
 	       $(INTERNAL_PROTO_FILES)
 
+# --grpc-gateway_out=paths=source_relative:./api
 proto:
 	@protoc --proto_path=./api \
 	       --proto_path=./third_party \
  	       --go_out=paths=source_relative:./api \
- 	       --go-grpc_out=paths=source_relative:./api \
-		   --grpc-gateway_out=paths=source_relative:./api \
+ 	       --go-grpc_out=paths=source_relative:./api\
 	       $(API_PROTO_FILES)
+
+#--openapiv2_opt=disable_service_tags=true
+
 swagger:
 	@go-bindata --nocompress -pkg swagger -o pkg/swagger/data.go third_party/swagger-ui/...
-	@protoc $(API_PROTO_FILES) \
-			--proto_path=./api \
+	@protoc --proto_path=./api \
 			--proto_path=./third_party \
-			--swagger_out=logtostderr=true:./api/openapi/v1 \
-			--experimental_allow_proto3_optional
+			--openapiv2_out=logtostderr=true:./api/openapi \
+			$(API_PROTO_FILES)
 		 
 			

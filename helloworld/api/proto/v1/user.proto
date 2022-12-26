@@ -17,6 +17,16 @@ service UserService {
 			  body: "*"
 			};
 	};
+
+	rpc User (UserRequest) returns (UserInfo){
+		// option type is http
+		option (google.api.http) = {
+			// this is url, for RESTfull/JSON api and method
+			// this line means when a HTTP post request comes with "/v1/login" call this rpc method over this service
+			  get: "/v1/user"
+			};
+	}
+
 	rpc UpdateInfo (UpdateInfoRequest) returns (UpdateInfoResponse){
 		// option type is http
 		option (google.api.http) = {
@@ -28,6 +38,8 @@ service UserService {
 	};
 	rpc Notify (NotifyRequest) returns (NotifyResponse);
 }
+
+message UserRequest{}
 
 message UserInfo {
 	uint32 id=1;

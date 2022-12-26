@@ -1,15 +1,19 @@
 package controller
 
-import "github.com/gin-gonic/gin"
+import (
+	"helloworld/internal/pkg/response"
 
-func (h *handler) create(ctx *gin.Context) {
+	"github.com/gin-gonic/gin"
+)
+
+func (h *Handler) create(ctx *gin.Context) {
 
 }
 
-func (h *handler) getUser(ctx *gin.Context) {
-
+func (h *Handler) getUser(ctx *gin.Context) {
+	response.OK(ctx, "helloworld")
 }
 
-func (h *handler) updateUserInfo(ctx *gin.Context) {
+func (h *Handler) updateUserInfo(ctx *gin.Context) {
 
 }

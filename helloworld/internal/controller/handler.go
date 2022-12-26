@@ -8,17 +8,18 @@ import (
 )
 
 // Handler ...
-type handler struct {
+type Handler struct {
 	userSrv *service.UserSrv
 }
 
 // NewHandler ...
-func NewHandler(userSrv *service.UserSrv) *handler {
-	return &handler{userSrv: userSrv}
+func NewHandler(userSrv *service.UserSrv) *Handler {
+	return &Handler{userSrv: userSrv}
 }
 
-// InstallHandler ...
-func (h *handler) InstallHandler(ctx context.Context, g gin.IRouter) {
+// APIHandler ...
+func (h *Handler) APIHandler(ctx context.Context, g gin.IRouter) {
+
 	g.POST("login", h.login)
 
 	userG := g.Group("user")
@@ -28,4 +29,9 @@ func (h *handler) InstallHandler(ctx context.Context, g gin.IRouter) {
 		userG.POST("updateInfo", h.updateUserInfo)
 	}
 
+}
+
+// SYSHandler ...
+func (h *Handler) SYSHandler(ctx context.Context, g gin.IRouter) {
+	g.GET("/swagger/", h.swaggerFile())
 }

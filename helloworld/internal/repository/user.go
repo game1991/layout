@@ -9,6 +9,7 @@ import (
 	"helloworld/dal/query"
 
 	"gorm.io/gen"
+	"gorm.io/gorm"
 )
 
 // Gender ...
@@ -23,13 +24,15 @@ const (
 
 // User ...
 type User struct {
-	ID        uint32       `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
-	Name      string       `gorm:"column:name;not null" json:"name"`
-	Age       uint32       `gorm:"column:age;not null" json:"age"`
-	Gender    uint32       `gorm:"column:gender;not null" json:"gender"`
-	Birthday  sql.NullTime `gorm:"column:birthday" json:"birthday"`
-	CreatedAt time.Time    `gorm:"column:created_at;not null" json:"created_at"`
-	UpdatedAt time.Time    `gorm:"column:updated_at;not null" json:"updated_at"`
+	ID        uint32         `gorm:"column:id;primaryKey;autoIncrement:true" json:"id"`
+	Username  string         `gorm:"column:username;not null" json:"username"`
+	Nickname  string         `gorm:"column:nickname;not null" json:"nickname"`
+	Age       uint32         `gorm:"column:age;not null" json:"age"`
+	Gender    uint32         `gorm:"column:gender;not null" json:"gender"`
+	Birthday  sql.NullTime   `gorm:"column:birthday" json:"birthday"`
+	CreatedAt time.Time      `gorm:"column:created_at;not null" json:"created_at"`
+	UpdatedAt time.Time      `gorm:"column:updated_at;not null" json:"updated_at"`
+	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`
 }
 
 // QueryUsers ...
@@ -69,10 +72,14 @@ type user struct {
 func CreateUser(u *User) (mu *model.User) {
 	if u != nil {
 		mu = &model.User{
-			Name:     u.Name,
-			Age:      u.Age,
-			Gender:   uint32(u.Gender),
-			Birthday: u.Birthday,
+			ID:        u.ID,
+			Username:  u.Username,
+			Nickname:  u.Nickname,
+			Age:       u.Age,
+			Gender:    uint32(u.Gender),
+			Birthday:  u.Birthday,
+			CreatedAt: u.CreatedAt,
+			UpdatedAt: u.UpdatedAt,
 		}
 	}
 	return
@@ -81,12 +88,14 @@ func CreateUser(u *User) (mu *model.User) {
 func convertToUser(u *model.User) *User {
 	return &User{
 		ID:        u.ID,
-		Name:      u.Name,
+		Username:  u.Username,
+		Nickname:  u.Nickname,
 		Age:       u.Age,
 		Gender:    u.Gender,
 		Birthday:  u.Birthday,
 		CreatedAt: u.CreatedAt,
 		UpdatedAt: u.UpdatedAt,
+		DeletedAt: u.DeletedAt,
 	}
 }
 
@@ -135,7 +144,7 @@ func (u *user) FindByCondition(ctx context.Context, cond *Condition) ([]*User, e
 func (u *user) withUserName(name string) func(tx gen.Dao) gen.Dao {
 	return func(tx gen.Dao) gen.Dao {
 		if name != "" {
-			return tx.Where(u.q.User.Name.Eq(name))
+			return tx.Where(u.q.User.Username.Eq(name))
 		}
 		return tx
 	}

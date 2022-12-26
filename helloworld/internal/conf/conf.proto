@@ -25,3 +25,15 @@ message Session {
 	bool HTTPOnly=11;
 	int32 SameSite=12;
 }
+
+message APPConfig {
+	string RunMode=1; // 运行模式
+	Switch Switch=2; // 开关
+}
+
+message Switch {
+	bool CloseSendSMS   =1;  //关闭发送短信
+	bool CloseSendEmail =2; //关闭发送邮件
+	bool CloseValidSMS  =3;  //关闭验证短信
+	bool CloseValidEmail=4;  //关闭验证邮件
+}

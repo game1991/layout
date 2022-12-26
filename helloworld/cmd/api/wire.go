@@ -6,6 +6,7 @@ package api
 import (
 	"helloworld/dal/query"
 	"helloworld/internal/conf"
+	"helloworld/internal/controller"
 	"helloworld/internal/pkg/store"
 	"helloworld/internal/repository"
 	"helloworld/internal/service"
@@ -20,6 +21,7 @@ func wireApp(*conf.Server, store.Config, ...gen.DOOption) (*APP, func(), error) 
 		query.Use,
 		repository.ProviderSet,
 		service.ProviderSet,
+		controller.ProviderSet,
 		newApp,
 	))
 	return &APP{}, nil, nil

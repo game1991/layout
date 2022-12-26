@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (h *handler) login(ctx *gin.Context) {
+func (h *Handler) login(ctx *gin.Context) {
 	in := &v1.LoginRequest{}
 	if err := ctx.Bind(in); err != nil {
 		response.Fail(ctx, err)

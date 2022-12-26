@@ -10,6 +10,7 @@ import (
 	"gorm.io/gen"
 	"helloworld/dal/query"
 	"helloworld/internal/conf"
+	"helloworld/internal/controller"
 	"helloworld/internal/pkg/store"
 	"helloworld/internal/repository"
 	"helloworld/internal/service"
@@ -23,11 +24,12 @@ func wireApp(server *conf.Server, config store.Config, arg ...gen.DOOption) (*AP
 		return nil, nil, err
 	}
 	queryQuery := query.Use(db, arg...)
-	greeterInter := repository.NewGreeterInter(queryQuery)
 	userInter := repository.NewUserInter(queryQuery)
-	greeterSrv := service.NewGreeterSrv(greeterInter, userInter)
 	userSrv := service.NewUserSrv(userInter)
-	app := newApp(server, greeterSrv, userSrv)
+	handler := controller.NewHandler(userSrv)
+	greeterInter := repository.NewGreeterInter(queryQuery)
+	greeterSrv := service.NewGreeterSrv(greeterInter, userInter)
+	app := newApp(server, handler, greeterSrv, userSrv)
 	return app, func() {
 		cleanup()
 	}, nil

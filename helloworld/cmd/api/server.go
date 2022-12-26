@@ -7,7 +7,6 @@ import (
 	"helloworld/build"
 	"helloworld/internal/conf"
 	"helloworld/internal/controller"
-	"helloworld/internal/pkg/store"
 	"helloworld/internal/server"
 	"helloworld/internal/service"
 	"helloworld/pkg/log"
@@ -38,19 +37,33 @@ var StartCmd = &cobra.Command{
 			}
 		}()
 
-		log.InitLog()
 		//TODO 读取配置文件
-
-		app, cleanup, err := wireApp(&conf.Server{Addr: ":8081"}, store.Config{
-			DSN: "root:root@(127.0.0.1:3306)/helloworld?charset=utf8mb4&parseTime=True&loc=Local",
-		})
+		if err := conf.InitConfig(); err != nil {
+			panic("InitConfig" + err.Error())
+		}
+		logConf, err := conf.Log()
+		if err != nil {
+			log.Panic("logConf", log.FieldErr(err))
+		}
+		log.InitLogger(*logConf)
+		serverConf, err := conf.GetServer()
+		if err != nil {
+			log.Panic("serverConf", log.FieldErr(err))
+		}
+		mysqlConf, err := conf.MySQL()
+		if err != nil {
+			log.Panic("mysql", log.FieldErr(err))
+		}
+		app, cleanup, err := wireApp(serverConf, *mysqlConf)
 		if err != nil {
 			log.Errorf("wireApp error : %v", err)
 			return err
 		}
-
 		defer cleanup()
 
+		log.Infof("服务启动中 Listening and serving HTTP on %v", serverConf.GetAddr())
+		build.BuildInfo()
+		log.Infof("SystemInfo:[%v]", build.SystemInfo)
 		// start and wait for stop signal
 		if err := app.Run(); err != nil {
 			panic(err)
@@ -79,6 +92,7 @@ type APP struct {
 // NewApp .
 func NewApp(
 	conf *conf.Server,
+	handler *controller.Handler,
 	greeterSrv *service.GreeterSrv,
 	userSrv *service.UserSrv,
 	opts ...Option,
@@ -97,16 +111,25 @@ func NewApp(
 	}
 
 	grpcServer := server.NewGRPCServer(conf)
+	/*
+		如果启动了 gprc 反射服务，那么就可以通过 reflection 包提供的反射服务查询 gRPC 服务或调用 gRPC 方法。
+		grpcurl 是 Go 语言开源社区开发的工具,可以用来验证grpc的服务。
+	*/
+	reflection.Register(grpcServer)
+
 	/***** 注册你的grpc服务 *****/
 	v1.RegisterGreeterServer(grpcServer, greeterSrv)
 	v1.RegisterUserServiceServer(grpcServer, userSrv)
-	reflection.Register(grpcServer)
+
 	// 初始化一个空Gin路由
 	engine := gin.Default()
 	/***** 添加你的api路由吧 *****/
-	controller.NewHandler(userSrv).InstallHandler(o.ctx, engine)
+	v1Engine := engine.Group("v1")
+	handler.APIHandler(o.ctx, v1Engine)
+	handler.SYSHandler(o.ctx, engine)
 
-	handler, err := server.Serve(grpcServer, engine)
+	// 使用grpc+gin模式同一个端口提供服务
+	httpHandler, err := server.Serve(grpcServer, engine)
 	if err != nil {
 		log.Panicf("server.Serve err:%v\n", err)
 	}
@@ -117,18 +140,20 @@ func NewApp(
 		ctx:    ctx,
 		sigs:   o.sigs,
 		cancel: cancel,
-		server: &http.Server{Addr: conf.GetAddr(), Handler: handler},
+		server: &http.Server{Addr: conf.GetAddr(), Handler: httpHandler},
 		addr:   conf.GetAddr(),
 	}
 }
 
 func newApp(
 	conf *conf.Server,
+	handler *controller.Handler,
 	greeterSrv *service.GreeterSrv,
 	userSrv *service.UserSrv,
 ) *APP {
 	return NewApp(
 		conf,
+		handler,
 		greeterSrv,
 		userSrv,
 		Name(build.Name),

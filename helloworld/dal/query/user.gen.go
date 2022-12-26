@@ -28,12 +28,14 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	tableName := _user.userDo.TableName()
 	_user.ALL = field.NewAsterisk(tableName)
 	_user.ID = field.NewUint32(tableName, "id")
-	_user.Name = field.NewString(tableName, "name")
+	_user.Username = field.NewString(tableName, "username")
+	_user.Nickname = field.NewString(tableName, "nickname")
 	_user.Age = field.NewUint32(tableName, "age")
 	_user.Gender = field.NewUint32(tableName, "gender")
 	_user.Birthday = field.NewField(tableName, "birthday")
 	_user.CreatedAt = field.NewTime(tableName, "created_at")
 	_user.UpdatedAt = field.NewTime(tableName, "updated_at")
+	_user.DeletedAt = field.NewField(tableName, "deleted_at")
 
 	_user.fillFieldMap()
 
@@ -45,12 +47,14 @@ type user struct {
 
 	ALL       field.Asterisk
 	ID        field.Uint32
-	Name      field.String
+	Username  field.String
+	Nickname  field.String
 	Age       field.Uint32
 	Gender    field.Uint32
 	Birthday  field.Field
 	CreatedAt field.Time
 	UpdatedAt field.Time
+	DeletedAt field.Field
 
 	fieldMap map[string]field.Expr
 }
@@ -68,12 +72,14 @@ func (u user) As(alias string) *user {
 func (u *user) updateTableName(table string) *user {
 	u.ALL = field.NewAsterisk(table)
 	u.ID = field.NewUint32(table, "id")
-	u.Name = field.NewString(table, "name")
+	u.Username = field.NewString(table, "username")
+	u.Nickname = field.NewString(table, "nickname")
 	u.Age = field.NewUint32(table, "age")
 	u.Gender = field.NewUint32(table, "gender")
 	u.Birthday = field.NewField(table, "birthday")
 	u.CreatedAt = field.NewTime(table, "created_at")
 	u.UpdatedAt = field.NewTime(table, "updated_at")
+	u.DeletedAt = field.NewField(table, "deleted_at")
 
 	u.fillFieldMap()
 
@@ -96,14 +102,16 @@ func (u *user) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (u *user) fillFieldMap() {
-	u.fieldMap = make(map[string]field.Expr, 7)
+	u.fieldMap = make(map[string]field.Expr, 9)
 	u.fieldMap["id"] = u.ID
-	u.fieldMap["name"] = u.Name
+	u.fieldMap["username"] = u.Username
+	u.fieldMap["nickname"] = u.Nickname
 	u.fieldMap["age"] = u.Age
 	u.fieldMap["gender"] = u.Gender
 	u.fieldMap["birthday"] = u.Birthday
 	u.fieldMap["created_at"] = u.CreatedAt
 	u.fieldMap["updated_at"] = u.UpdatedAt
+	u.fieldMap["deleted_at"] = u.DeletedAt
 }
 
 func (u user) clone(db *gorm.DB) user {

@@ -211,6 +211,132 @@ func (x *Session) GetSameSite() int32 {
 	return 0
 }
 
+type APPConfig struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	RunMode string  `protobuf:"bytes,1,opt,name=RunMode,proto3" json:"RunMode,omitempty"` // 运行模式
+	Switch  *Switch `protobuf:"bytes,2,opt,name=Switch,proto3" json:"Switch,omitempty"`   // 开关
+}
+
+func (x *APPConfig) Reset() {
+	*x = APPConfig{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_conf_conf_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *APPConfig) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*APPConfig) ProtoMessage() {}
+
+func (x *APPConfig) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_conf_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use APPConfig.ProtoReflect.Descriptor instead.
+func (*APPConfig) Descriptor() ([]byte, []int) {
+	return file_conf_conf_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *APPConfig) GetRunMode() string {
+	if x != nil {
+		return x.RunMode
+	}
+	return ""
+}
+
+func (x *APPConfig) GetSwitch() *Switch {
+	if x != nil {
+		return x.Switch
+	}
+	return nil
+}
+
+type Switch struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	CloseSendSMS    bool `protobuf:"varint,1,opt,name=CloseSendSMS,proto3" json:"CloseSendSMS,omitempty"`       //关闭发送短信
+	CloseSendEmail  bool `protobuf:"varint,2,opt,name=CloseSendEmail,proto3" json:"CloseSendEmail,omitempty"`   //关闭发送邮件
+	CloseValidSMS   bool `protobuf:"varint,3,opt,name=CloseValidSMS,proto3" json:"CloseValidSMS,omitempty"`     //关闭验证短信
+	CloseValidEmail bool `protobuf:"varint,4,opt,name=CloseValidEmail,proto3" json:"CloseValidEmail,omitempty"` //关闭验证邮件
+}
+
+func (x *Switch) Reset() {
+	*x = Switch{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_conf_conf_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Switch) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Switch) ProtoMessage() {}
+
+func (x *Switch) ProtoReflect() protoreflect.Message {
+	mi := &file_conf_conf_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Switch.ProtoReflect.Descriptor instead.
+func (*Switch) Descriptor() ([]byte, []int) {
+	return file_conf_conf_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Switch) GetCloseSendSMS() bool {
+	if x != nil {
+		return x.CloseSendSMS
+	}
+	return false
+}
+
+func (x *Switch) GetCloseSendEmail() bool {
+	if x != nil {
+		return x.CloseSendEmail
+	}
+	return false
+}
+
+func (x *Switch) GetCloseValidSMS() bool {
+	if x != nil {
+		return x.CloseValidSMS
+	}
+	return false
+}
+
+func (x *Switch) GetCloseValidEmail() bool {
+	if x != nil {
+		return x.CloseValidEmail
+	}
+	return false
+}
+
 var File_conf_conf_proto protoreflect.FileDescriptor
 
 var file_conf_conf_proto_rawDesc = []byte{
@@ -243,10 +369,25 @@ var file_conf_conf_proto_rawDesc = []byte{
 	0x4d, 0x61, 0x78, 0x41, 0x67, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x48, 0x54, 0x54, 0x50, 0x4f, 0x6e,
 	0x6c, 0x79, 0x18, 0x0b, 0x20, 0x01, 0x28, 0x08, 0x52, 0x08, 0x48, 0x54, 0x54, 0x50, 0x4f, 0x6e,
 	0x6c, 0x79, 0x12, 0x1a, 0x0a, 0x08, 0x53, 0x61, 0x6d, 0x65, 0x53, 0x69, 0x74, 0x65, 0x18, 0x0c,
-	0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x53, 0x61, 0x6d, 0x65, 0x53, 0x69, 0x74, 0x65, 0x42, 0x1f,
-	0x5a, 0x1d, 0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x77, 0x6f, 0x72, 0x6c, 0x64, 0x2f, 0x69, 0x6e, 0x74,
-	0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63, 0x6f, 0x6e, 0x66, 0x3b, 0x63, 0x6f, 0x6e, 0x66, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x53, 0x61, 0x6d, 0x65, 0x53, 0x69, 0x74, 0x65, 0x22, 0x4f,
+	0x0a, 0x09, 0x41, 0x50, 0x50, 0x43, 0x6f, 0x6e, 0x66, 0x69, 0x67, 0x12, 0x18, 0x0a, 0x07, 0x52,
+	0x75, 0x6e, 0x4d, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x52, 0x75,
+	0x6e, 0x4d, 0x6f, 0x64, 0x65, 0x12, 0x28, 0x0a, 0x06, 0x53, 0x77, 0x69, 0x74, 0x63, 0x68, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x10, 0x2e, 0x63, 0x6f, 0x6e, 0x66, 0x2e, 0x61, 0x70, 0x69,
+	0x2e, 0x53, 0x77, 0x69, 0x74, 0x63, 0x68, 0x52, 0x06, 0x53, 0x77, 0x69, 0x74, 0x63, 0x68, 0x22,
+	0xa4, 0x01, 0x0a, 0x06, 0x53, 0x77, 0x69, 0x74, 0x63, 0x68, 0x12, 0x22, 0x0a, 0x0c, 0x43, 0x6c,
+	0x6f, 0x73, 0x65, 0x53, 0x65, 0x6e, 0x64, 0x53, 0x4d, 0x53, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08,
+	0x52, 0x0c, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x53, 0x65, 0x6e, 0x64, 0x53, 0x4d, 0x53, 0x12, 0x26,
+	0x0a, 0x0e, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x53, 0x65, 0x6e, 0x64, 0x45, 0x6d, 0x61, 0x69, 0x6c,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0e, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x53, 0x65, 0x6e,
+	0x64, 0x45, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x24, 0x0a, 0x0d, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x56,
+	0x61, 0x6c, 0x69, 0x64, 0x53, 0x4d, 0x53, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0d, 0x43,
+	0x6c, 0x6f, 0x73, 0x65, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x53, 0x4d, 0x53, 0x12, 0x28, 0x0a, 0x0f,
+	0x43, 0x6c, 0x6f, 0x73, 0x65, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x45, 0x6d, 0x61, 0x69, 0x6c, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0f, 0x43, 0x6c, 0x6f, 0x73, 0x65, 0x56, 0x61, 0x6c, 0x69,
+	0x64, 0x45, 0x6d, 0x61, 0x69, 0x6c, 0x42, 0x1f, 0x5a, 0x1d, 0x68, 0x65, 0x6c, 0x6c, 0x6f, 0x77,
+	0x6f, 0x72, 0x6c, 0x64, 0x2f, 0x69, 0x6e, 0x74, 0x65, 0x72, 0x6e, 0x61, 0x6c, 0x2f, 0x63, 0x6f,
+	0x6e, 0x66, 0x3b, 0x63, 0x6f, 0x6e, 0x66, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -261,19 +402,22 @@ func file_conf_conf_proto_rawDescGZIP() []byte {
 	return file_conf_conf_proto_rawDescData
 }
 
-var file_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_conf_conf_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_conf_conf_proto_goTypes = []interface{}{
 	(*Server)(nil),              // 0: conf.api.Server
 	(*Session)(nil),             // 1: conf.api.Session
-	(*durationpb.Duration)(nil), // 2: google.protobuf.Duration
+	(*APPConfig)(nil),           // 2: conf.api.APPConfig
+	(*Switch)(nil),              // 3: conf.api.Switch
+	(*durationpb.Duration)(nil), // 4: google.protobuf.Duration
 }
 var file_conf_conf_proto_depIdxs = []int32{
-	2, // 0: conf.api.Server.timeout:type_name -> google.protobuf.Duration
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	4, // 0: conf.api.Server.timeout:type_name -> google.protobuf.Duration
+	3, // 1: conf.api.APPConfig.Switch:type_name -> conf.api.Switch
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_conf_conf_proto_init() }
@@ -306,6 +450,30 @@ func file_conf_conf_proto_init() {
 				return nil
 			}
 		}
+		file_conf_conf_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*APPConfig); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_conf_conf_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Switch); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -313,7 +481,7 @@ func file_conf_conf_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_conf_conf_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

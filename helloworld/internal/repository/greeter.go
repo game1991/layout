@@ -42,7 +42,7 @@ func (g *greeter) Greeter(ctx context.Context, greeter *Greeter) (string, error)
 	}
 	// TODO : greeter reply
 
-	return "hello" + greeter.User.Name, nil
+	return "hello" + greeter.User.Username, nil
 }
 
 func (g *greeter) GetTransaction(ctx context.Context) func(fc func(tx *query.Query) error, opts ...*sql.TxOptions) error {

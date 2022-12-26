@@ -1,2 +1,4 @@
 *.exe
 !.gitkeep
+configs/local.toml
+helloworld
