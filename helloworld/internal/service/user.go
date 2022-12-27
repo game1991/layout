@@ -5,6 +5,9 @@ import (
 	v1 "helloworld/api/proto/v1"
 	"helloworld/internal/pkg/ecode"
 	"helloworld/internal/repository"
+	"time"
+
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // UserSrv ...
@@ -21,7 +24,10 @@ func NewUserSrv(ui repository.UserInter) *UserSrv {
 // Login ...
 func (us *UserSrv) Login(ctx context.Context, req *v1.LoginRequest) (*v1.LoginResponse, error) {
 	// TODO 检验账号密码
-	return nil, nil
+
+	return &v1.LoginResponse{
+		LoginedAt: timestamppb.New(time.Now()),
+	}, nil
 }
 
 // User ...

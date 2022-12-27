@@ -75,7 +75,7 @@ $(info $$BIN=$(BIN))
 # $(info $$INTERNAL_PROTO_FILES=$(INTERNAL_PROTO_FILES))
 # $(info $$API_PROTO_FILES=$(API_PROTO_FILES))
 
-.PHONY: init info print build config proto swagger
+.PHONY: install info print build config proto swagger tool
 
 install:
 	@go get \
@@ -148,5 +148,8 @@ swagger:
 			--proto_path=./third_party \
 			--openapiv2_out=logtostderr=true:./api/openapi \
 			$(API_PROTO_FILES)
-		 
+
+tool:
+	@go get github.com/fullstorydev/grpcurl/cmd/grpcurl/...
+	@go install github.com/fullstorydev/grpcurl/cmd/grpcurl
 			

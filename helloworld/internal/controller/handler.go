@@ -33,5 +33,6 @@ func (h *Handler) APIHandler(ctx context.Context, g gin.IRouter) {
 
 // SYSHandler ...
 func (h *Handler) SYSHandler(ctx context.Context, g gin.IRouter) {
-	g.GET("/swagger/", h.swaggerFile())
+	g.GET("/swagger/*any", h.swaggerFile())
+	g.GET("/swagger-ui/*any", h.swaggerUI())
 }

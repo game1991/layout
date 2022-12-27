@@ -54,6 +54,7 @@ var StartCmd = &cobra.Command{
 		if err != nil {
 			log.Panic("mysql", log.FieldErr(err))
 		}
+		log.Debug("read config", "serverConf", serverConf, "mysqlConf", mysqlConf)
 		app, cleanup, err := wireApp(serverConf, *mysqlConf)
 		if err != nil {
 			log.Errorf("wireApp error : %v", err)

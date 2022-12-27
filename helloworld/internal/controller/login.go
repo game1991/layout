@@ -18,5 +18,5 @@ func (h *Handler) login(ctx *gin.Context) {
 		response.Fail(ctx, err)
 		return
 	}
-	response.OK(ctx, out.LoginedAt)
+	response.OK(ctx, out.LoginedAt.AsTime().UnixMilli())
 }

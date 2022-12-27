@@ -7,7 +7,9 @@ import (
 	"strings"
 
 	"helloworld/internal/conf"
+	"helloworld/pkg/swagger"
 
+	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,7 +24,6 @@ func (h *Handler) swaggerFile() gin.HandlerFunc {
 			c.String(404, "")
 		}
 	}
-
 	return gin.WrapF(func(w http.ResponseWriter, r *http.Request) {
 		if !strings.HasSuffix(r.URL.Path, "swagger.json") {
 			log.Debugf("Not Found: %s", r.URL.Path)
@@ -48,5 +49,11 @@ func (h *Handler) swaggerUI() gin.HandlerFunc {
 			c.String(404, "")
 		}
 	}
-	return func(ctx *gin.Context) {}
+	fileServer := http.FileServer(&assetfs.AssetFS{
+		Asset:    swagger.Asset,
+		AssetDir: swagger.AssetDir,
+		Prefix:   "third_party/swagger-ui",
+	})
+	prefix := "/swagger-ui/"
+	return gin.WrapH(http.StripPrefix(prefix, fileServer))
 }

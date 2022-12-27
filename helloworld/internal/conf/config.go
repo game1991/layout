@@ -66,7 +66,7 @@ var appConfig *APPConfig
 // InitConfig init config
 func InitConfig() (err error) {
 	viper.SetConfigType("toml")
-	viper.AddConfigPath("./conf/")
+	viper.AddConfigPath("./configs/")
 
 	// 指定配置文件夹路径
 	if args.Exists("-d") {
@@ -95,7 +95,7 @@ func InitConfig() (err error) {
 		v := viper.New()
 		v.SetConfigName("local")
 		v.SetConfigType("toml")
-		v.AddConfigPath("./conf/")
+		v.AddConfigPath("./configs/")
 		if args.Exists("-d") {
 			v.AddConfigPath(args.GetValue("-d"))
 		}
