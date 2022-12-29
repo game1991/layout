@@ -149,7 +149,12 @@ swagger:
 			--openapiv2_out=logtostderr=true:./api/openapi \
 			$(API_PROTO_FILES)
 
+# github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
 tool:
-	@go get github.com/fullstorydev/grpcurl/cmd/grpcurl/...
-	@go install github.com/fullstorydev/grpcurl/cmd/grpcurl
+	@go install \
+		github.com/fullstorydev/grpcui/cmd/grpcui@latest
+
+	@echo "install grpc tools finished"
+#usage: grpcui -plaintext 您的app服务地址 
+#eg: grpcui -plaintext localhost:8080
 			

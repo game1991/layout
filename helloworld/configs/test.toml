@@ -1,7 +1,9 @@
 [Server]
     address = ":8080" # 常见容器中运行
+	[Server.timeout]
+		seconds = 5
 [MySQL]
-	dsn="developer:zonst!123@(192.168.10.2:3306)/helloworld?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn="user:password@(yourhost:3306)/helloworld?charset=utf8mb4&parseTime=True&loc=Local"
 [Log]
     output = "stdout"
     level = "dev"

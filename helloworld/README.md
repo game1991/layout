@@ -1,5 +1,9 @@
 # Helloworld Layout
 
+## 快速上手
+
+文档地址：[https://luckystars-organization.gitbook.io/golang-layout-shi-yong-zhi-nan/](https://luckystars-organization.gitbook.io/golang-layout-shi-yong-zhi-nan/)
+
 ## 项目结构说明
 
 ### /api
