@@ -13,7 +13,7 @@ func (h *Handler) login(ctx *gin.Context) {
 		response.Fail(ctx, err)
 		return
 	}
-	out, err := h.userSrv.Login(ctx, in)
+	out, err := h.srv.Login(ctx, in)
 	if err != nil {
 		response.Fail(ctx, err)
 		return

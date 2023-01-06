@@ -3,7 +3,7 @@
 	[Server.timeout]
 		seconds = 5
 [MySQL]
-	dsn="user:password@(yourhost:3306)/helloworld?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn="developer:zonst!123@(192.168.10.2:3306)/helloworld?charset=utf8mb4&parseTime=True&loc=Local"
 [Log]
     output = "stdout"
     level = "dev"

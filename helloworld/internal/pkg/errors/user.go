@@ -1,8 +1,8 @@
-package repository
+package errors
 
 import "errors"
 
-// err .
+// error define
 var (
 	ErrBadParam     = errors.New("bad param")
 	ErrUserNotFound = errors.New("user not found")

@@ -7,19 +7,18 @@ import (
 )
 
 // GreeterSrv .
-type GreeterSrv struct {
-	v1.UnimplementedGreeterServer
+type greeterSrv struct {
 	gi repository.GreeterInter
 	ui repository.UserInter
 }
 
 // NewGreeterSrv .
-func NewGreeterSrv(gi repository.GreeterInter, ui repository.UserInter) *GreeterSrv {
-	return &GreeterSrv{gi: gi, ui: ui}
+func NewGreeterSrv(gi repository.GreeterInter, ui repository.UserInter) *greeterSrv {
+	return &greeterSrv{gi: gi, ui: ui}
 }
 
 // SayHello .
-func (gs *GreeterSrv) SayHello(ctx context.Context, req *v1.HelloworldRequset) (*v1.HelloworldReply, error) {
+func (gs *greeterSrv) SayHello(ctx context.Context, req *v1.HelloworldRequset) (*v1.HelloworldReply, error) {
 	us, err := gs.ui.FindByCondition(ctx, &repository.Condition{Name: req.GetName()})
 	if err != nil {
 		return nil, err
