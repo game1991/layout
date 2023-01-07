@@ -1,0 +1,52 @@
+syntax="proto3";
+
+package helloworld.api.v1;
+
+option go_package = "helloworld/api/proto/v1;v1";
+
+import "google/protobuf/timestamp.proto";
+
+message UserRequest{}
+
+message UserInfo {
+	uint32 id=1;
+	string userName=2;
+	string nickName =3;
+	uint32 age =4;
+	enum Gender {
+		SECRET=0;
+		MALE=1;
+		FEMALE=2;
+	}
+	Gender gender=5;
+}
+
+message LoginRequest {
+	optional string userName = 1; // 用户名
+	optional string password =2; // 密码
+}
+
+message LoginResponse{
+	google.protobuf.Timestamp logined_at =1; // 登录时间
+}
+
+message UpdateInfoRequest {
+	bytes file=1;
+}
+
+message UpdateInfoResponse {
+	int64 affectedRows=1;
+	bool isSucceed=2;
+}
+
+message NotifyRequest {
+	optional string msg=1;
+	oneof notifyStyle {
+		string email =2;
+		string phone =3;
+	}
+}
+
+message NotifyResponse {
+	bool isSend =1;
+}

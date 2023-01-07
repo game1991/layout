@@ -7,6 +7,7 @@ import (
 	"helloworld/build"
 	"helloworld/internal/conf"
 	"helloworld/internal/controller"
+	"helloworld/internal/middlerware"
 	"helloworld/internal/server"
 	"helloworld/internal/service"
 	"helloworld/pkg/log"
@@ -55,6 +56,7 @@ var StartCmd = &cobra.Command{
 			log.Panic("mysql", log.FieldErr(err))
 		}
 		log.Debug("read config", "serverConf", serverConf, "mysqlConf", mysqlConf)
+
 		app, cleanup, err := wireApp(serverConf, *mysqlConf)
 		if err != nil {
 			log.Errorf("wireApp error : %v", err)
@@ -94,8 +96,7 @@ type APP struct {
 func NewApp(
 	conf *conf.Server,
 	handler *controller.Handler,
-	greeterSrv *service.GreeterSrv,
-	userSrv *service.UserSrv,
+	service *service.Service,
 	opts ...Option,
 ) *APP {
 	// default option
@@ -111,7 +112,16 @@ func NewApp(
 		opt(o)
 	}
 
-	grpcServer := server.NewGRPCServer(conf)
+	grpcServer := server.NewGRPCServer(
+		conf,
+		// 添加一元拦截器
+		middlerware.GrpcUseUnaryIncerceptor(
+			middlerware.GrpcRecovery(),
+			middlerware.GrpcError(),
+		),
+		// 添加流式拦截器
+		middlerware.GrpcUseStreamIncerceptor(),
+	)
 	/*
 		如果启动了 gprc 反射服务，那么就可以通过 reflection 包提供的反射服务查询 gRPC 服务或调用 gRPC 方法。
 		grpcurl 是 Go 语言开源社区开发的工具,可以用来验证grpc的服务。
@@ -119,8 +129,7 @@ func NewApp(
 	reflection.Register(grpcServer)
 
 	/***** 注册你的grpc服务 *****/
-	v1.RegisterGreeterServer(grpcServer, greeterSrv)
-	v1.RegisterUserServiceServer(grpcServer, userSrv)
+	v1.RegisterHelloworldServiceServer(grpcServer, service)
 
 	// 初始化一个空Gin路由
 	engine := gin.Default()
@@ -149,16 +158,15 @@ func NewApp(
 func newApp(
 	conf *conf.Server,
 	handler *controller.Handler,
-	greeterSrv *service.GreeterSrv,
-	userSrv *service.UserSrv,
+	service *service.Service,
 ) *APP {
 	return NewApp(
 		conf,
 		handler,
-		greeterSrv,
-		userSrv,
+		service,
 		Name(build.Name),
 		Version(build.Version),
+		Metadata(map[string]string{}),
 	)
 }
 

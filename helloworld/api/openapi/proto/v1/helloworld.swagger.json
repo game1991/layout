@@ -1,12 +1,12 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "proto/v1/user.proto",
+    "title": "proto/v1/helloworld.proto",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "UserService"
+      "name": "HelloworldService"
     }
   ],
   "consumes": [
@@ -18,7 +18,8 @@
   "paths": {
     "/v1/login": {
       "post": {
-        "operationId": "UserService_Login",
+        "summary": "user service",
+        "operationId": "HelloworldService_Login",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -44,13 +45,44 @@
           }
         ],
         "tags": [
-          "UserService"
+          "HelloworldService"
+        ]
+      }
+    },
+    "/v1/sayhello": {
+      "get": {
+        "summary": "greeter service",
+        "operationId": "HelloworldService_SayHello",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1HelloworldReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HelloworldService"
         ]
       }
     },
     "/v1/user": {
       "get": {
-        "operationId": "UserService_User",
+        "operationId": "HelloworldService_User",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -66,13 +98,45 @@
           }
         },
         "tags": [
-          "UserService"
+          "HelloworldService"
+        ]
+      }
+    },
+    "/v1/user/notify": {
+      "post": {
+        "operationId": "HelloworldService_Notify",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1NotifyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1NotifyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HelloworldService"
         ]
       }
     },
     "/v1/user/updateInfo": {
       "post": {
-        "operationId": "UserService_UpdateInfo",
+        "operationId": "HelloworldService_UpdateInfo",
         "responses": {
           "200": {
             "description": "A successful response.",
@@ -98,7 +162,7 @@
           }
         ],
         "tags": [
-          "UserService"
+          "HelloworldService"
         ]
       }
     }
@@ -140,6 +204,14 @@
         }
       }
     },
+    "v1HelloworldReply": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
     "v1LoginRequest": {
       "type": "object",
       "properties": {
@@ -163,6 +235,20 @@
         }
       }
     },
+    "v1NotifyRequest": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
     "v1NotifyResponse": {
       "type": "object",
       "properties": {
@@ -172,10 +258,25 @@
       }
     },
     "v1UpdateInfoRequest": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
     },
     "v1UpdateInfoResponse": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "affectedRows": {
+          "type": "string",
+          "format": "int64"
+        },
+        "isSucceed": {
+          "type": "boolean"
+        }
+      }
     },
     "v1UserInfo": {
       "type": "object",

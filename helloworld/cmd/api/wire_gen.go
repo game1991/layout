@@ -24,12 +24,13 @@ func wireApp(server *conf.Server, config store.Config, arg ...gen.DOOption) (*AP
 		return nil, nil, err
 	}
 	queryQuery := query.Use(db, arg...)
-	userInter := repository.NewUserInter(queryQuery)
-	userSrv := service.NewUserSrv(userInter)
-	handler := controller.NewHandler(userSrv)
 	greeterInter := repository.NewGreeterInter(queryQuery)
+	userInter := repository.NewUserInter(queryQuery)
 	greeterSrv := service.NewGreeterSrv(greeterInter, userInter)
-	app := newApp(server, handler, greeterSrv, userSrv)
+	userSrv := service.NewUserSrv(userInter)
+	serviceService := service.NewService(greeterSrv, userSrv)
+	handler := controller.NewHandler(serviceService)
+	app := newApp(server, handler, serviceService)
 	return app, func() {
 		cleanup()
 	}, nil

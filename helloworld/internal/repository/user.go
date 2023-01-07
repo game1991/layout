@@ -8,6 +8,8 @@ import (
 	"helloworld/dal/model"
 	"helloworld/dal/query"
 
+	pErr "helloworld/internal/pkg/errors"
+
 	"gorm.io/gen"
 	"gorm.io/gorm"
 )
@@ -122,7 +124,7 @@ func (u *user) DeleteByIDs(ctx context.Context, ids []uint32) error {
 func (u *user) FindByCondition(ctx context.Context, cond *Condition) ([]*User, error) {
 	// 条件查询
 	if cond == nil {
-		return nil, ErrBadParam
+		return nil, pErr.ErrBadParam
 	}
 
 	sub := u.q.User.WithContext(ctx).Scopes(

@@ -21,6 +21,7 @@ type User struct {
 	Age       uint32         `gorm:"column:age;not null" json:"age"`
 	Gender    uint32         `gorm:"column:gender;not null" json:"gender"`
 	Birthday  sql.NullTime   `gorm:"column:birthday" json:"birthday"`
+	Avator    []byte         `gorm:"column:avator;not null" json:"avator"`
 	CreatedAt time.Time      `gorm:"column:created_at;not null" json:"created_at"`
 	UpdatedAt time.Time      `gorm:"column:updated_at;not null" json:"updated_at"`
 	DeletedAt gorm.DeletedAt `gorm:"column:deleted_at" json:"deleted_at"`

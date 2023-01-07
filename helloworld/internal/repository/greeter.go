@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"helloworld/dal/query"
+	pErr "helloworld/internal/pkg/errors"
 )
 
 // Greeter ...
@@ -38,7 +39,7 @@ func CreateGreeter(userinfo *User) *Greeter {
 
 func (g *greeter) Greeter(ctx context.Context, greeter *Greeter) (string, error) {
 	if greeter.User == nil {
-		return "", ErrBadParam
+		return "", pErr.ErrBadParam
 	}
 	// TODO : greeter reply
 

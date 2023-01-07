@@ -1,9 +1,17 @@
 package ecode
 
 import (
+	// "git.xq5.com/office/survey-backend/utils/ecode/rpc"
 	"errors"
 
+	//"git.xq5.com/office/survey-backend/pkg/captcha"
+	pErrors "helloworld/internal/pkg/errors"
 	"helloworld/pkg/response"
+
+	pStatus "helloworld/pkg/status"
+
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 // 负数的错误码直接弹框进行展示。如创建用户，用户参数缺失
@@ -32,29 +40,35 @@ const (
 	NotImplemented = -100444
 	// SystemError 系统错误
 	SystemError = -100520
-
-	ErrGetPhoneNumber = -1 // 小程序获取手机号码失败
 )
 
 // 用户业务
 const (
-	ErrUserNotExist          = 1 // 用户不在任务系统名单
-	ErrQuestionnaireNotStart = 2 // 当前任务未到时间
-	ErrQuestionnaireExpired  = 3 // 当前任务已到结束时间
-	ErrTaskStatusOrNotExist  = 4 // 当前任务状态不正确或者不存在
-	ErrTaskNotPickCompany    = 5 // 当前任务没有选择企业
-	ErrTaskHasExpired        = 7 // 当前任务已过期
+	// 业务code从6位数开始
+	ErrUserNotExist             = 1000001 // 用户不在问卷系统名单
+	ErrQuestionnaireNotStart    = 1000002 // 当前问卷未到时间
+	ErrQuestionnaireExpired     = 1000003 // 当前问卷已到结束时间
+	ErrTaskStatusOrNotExist     = 1000004 // 当前任务状态不正确或者不存在
+	ErrTaskNotPickCompany       = 1000005 // 当前任务没有选择企业
+	ErrTaskNotPickQuestionnaire = 1000006 // 当前任务没有选择问卷
+	ErrTaskHasExpired           = 1000007 // 当前任务已过期
+	ErrAnswerTimerTooShort      = 1000008 // 当前填写时长太短
+	ErrCaptchaCode              = 100000  // 验证码无效
+	ErrCaptchaSendTooBusy       = 100001  // 验证码发送太频繁(指的是当日频次)
+	ErrCaptchaCoolDown          = 100002  // 验证码发送cd冷却时间内
 
-	ErrCaptchaCode        = 100000 // 验证码无效
-	ErrCaptchaSendTooBusy = 100001 // 验证码发送太频繁(指的是当日频次)
-	ErrCaptchaCoolDown    = 100002 // 验证码发送cd冷却时间内
-
-	ErrAdminUserNamePassword = 100004 // 用户名或密码错误
-	ErrAdminUserNotExist     = 100005 // 用户不存在
-	ErrAdminUserNameExist    = 100006 // 用户名存在
-	ErrAdminUserDeleteSelf   = 100007 // 用户不可以删除自己
-	ErrAdminUserIsDisable    = 100008 // 用户已被禁用
-	ErrAdminUserDisableSelf  = 100009 // 用户不能禁用自己
+	ErrAnswerNotFound                  = 100003 // 问卷答案不存在
+	ErrAdminUserNamePassword           = 100004 // 用户名或密码错误
+	ErrAdminUserNotExist               = 100005 // 用户不存在
+	ErrAdminUserNameExist              = 100006 // 用户名存在
+	ErrAdminUserDeleteSelf             = 100007 // 用户不可以删除自己
+	ErrAdminUserIsDisable              = 100008 // 用户已被禁用
+	ErrAdminUserDisableSelf            = 100009 // 用户不能禁用自己
+	ErrPhoneReg                        = 100010 // 错误的手机号格式
+	ErrQuestionnaireNameHasExisted     = 100011 // 问卷名称已存在
+	ErrInvitationNotFoundSMSStatusInit = 100012 // 受邀企业中没有短信待确定的对象
+	ErrTaskInvitationHasExisted        = 100013 //当前任务中已有此号码，无法重复添加
+	ErrInvitationSmsStatus             = 100014 // 当前任务没有符合短信状态的受邀企业
 
 	ErrAdminInvitationImportText = 200000 // 管理员批量导入输入错误
 
@@ -64,6 +78,11 @@ const (
 	ErrNodeParentIsNull    = 110004 // 插入子节点，父节点字段不能为空
 	ErrDictIDNotExist      = 110005 // 数据字典不存在
 
+	ErrReportNumberNotExist = 120001 // 选择得分报表编号不存在
+	ErrStatisticsIsRunning  = 120002 // 得分统计正在计算中
+
+	ErrQuestionnaireNotFound = 130001 // 问卷不存在
+	ErrTaskNotFound          = 140001 // 任务不存在
 )
 
 var (
@@ -92,16 +111,23 @@ func init() {
 
 // WrapErrorWithCode 封装错误通过code判断
 func WrapErrorWithCode(err error) response.Error {
-	if respErr, ok := err.(response.Error); ok {
-		return respErr
-	}
 	code := InternalServerError
 	switch err.(type) {
+	case response.Error:
+		respErr := err.(response.Error)
+		return respErr
 	// case *rpc.Error:
 	// 	e := err.(*goMicroErr.Error)
 	// 	switch e.Code {
-
 	// 	}
+
+	// grpc status error
+	case (interface {
+		GRPCStatus() *status.Status
+	}):
+		st := status.Convert(err)
+		code = HTTPStatusFromCode(st.Code())
+
 	case error:
 		e := err.(error)
 		switch e {
@@ -116,4 +142,55 @@ func WrapErrorWithCode(err error) response.Error {
 		}
 	}
 	return &response.InnerError{Status: code, Msg: err.Error()}
+}
+
+// HTTPStatusFromCode 将grpc的错误码转换为http错误码
+func HTTPStatusFromCode(code codes.Code) int {
+	return pStatus.FromGRPCCode(code)
+}
+
+// ConvertToGrpcErr 将自定义错误转化为grpc错误
+func ConvertToGrpcErr(err error) error {
+	code := codes.Internal
+	switch err.(type) {
+	case (interface {
+		GRPCStatus() *status.Status
+	}):
+		return err
+
+	case response.Error:
+		respErr := err.(response.Error)
+
+		switch respErr.Code() {
+		// 针对当前系统中初始设定的一些错误
+		case BadRequest:
+			code = codes.InvalidArgument
+		case Unauthorized:
+			code = codes.PermissionDenied
+		case NotFound:
+			code = codes.NotFound
+		case InternalServerError:
+			code = codes.Internal
+		case DatabaseOperationError:
+			code = codes.DataLoss
+		default:
+			code = codes.Code(respErr.Code())
+		}
+
+	case error:
+		e := err.(error)
+		switch e {
+		case ErrBadRequest:
+			// 这里是常见的通用错误
+			code = codes.InvalidArgument
+		//....
+		case pErrors.ErrBadParam:
+			code = codes.Code(codes.InvalidArgument)
+		case pErrors.ErrUserNotFound:
+			// 如果各自模块有自己定义的错误集，可以通过这里转换为使用业务定义的code
+			code = codes.Code(ErrUserNotExist)
+			// ....
+		}
+	}
+	return status.Errorf(code, err.Error())
 }

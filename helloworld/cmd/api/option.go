@@ -12,9 +12,10 @@ type options struct {
 	ctx  context.Context
 	sigs []os.Signal
 
-	id      string
-	name    string
-	version string
+	id       string
+	name     string
+	version  string
+	metadata map[string]string
 }
 
 // ID with service id.
@@ -30,6 +31,11 @@ func Name(name string) Option {
 // Version with service version.
 func Version(version string) Option {
 	return func(o *options) { o.version = version }
+}
+
+// Metadata with service metadata.
+func Metadata(md map[string]string) Option {
+	return func(o *options) { o.metadata = md }
 }
 
 // Context with service context.

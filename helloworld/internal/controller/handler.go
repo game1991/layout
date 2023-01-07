@@ -9,12 +9,12 @@ import (
 
 // Handler ...
 type Handler struct {
-	userSrv *service.UserSrv
+	srv *service.Service
 }
 
 // NewHandler ...
-func NewHandler(userSrv *service.UserSrv) *Handler {
-	return &Handler{userSrv: userSrv}
+func NewHandler(srv *service.Service) *Handler {
+	return &Handler{srv: srv}
 }
 
 // APIHandler ...
@@ -27,6 +27,7 @@ func (h *Handler) APIHandler(ctx context.Context, g gin.IRouter) {
 		userG.POST("", h.create)
 		userG.GET("", h.getUser)
 		userG.POST("updateInfo", h.updateUserInfo)
+		userG.POST("notify", h.notify)
 	}
 
 }
