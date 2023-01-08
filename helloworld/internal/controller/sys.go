@@ -9,7 +9,6 @@ import (
 	"helloworld/internal/conf"
 	"helloworld/pkg/swagger"
 
-	assetfs "github.com/elazarl/go-bindata-assetfs"
 	"github.com/gin-gonic/gin"
 )
 
@@ -49,11 +48,7 @@ func (h *Handler) swaggerUI() gin.HandlerFunc {
 			c.String(404, "")
 		}
 	}
-	fileServer := http.FileServer(&assetfs.AssetFS{
-		Asset:    swagger.Asset,
-		AssetDir: swagger.AssetDir,
-		Prefix:   "third_party/swagger-ui",
-	})
+	fileServer := http.FileServer(swagger.AssetFS())
 	prefix := "/swagger-ui/"
 	return gin.WrapH(http.StripPrefix(prefix, fileServer))
 }

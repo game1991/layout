@@ -83,7 +83,6 @@ install:
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
 		google.golang.org/protobuf/cmd/protoc-gen-go \
 		google.golang.org/grpc/cmd/protoc-gen-go-grpc \
-		github.com/fullstorydev/grpcurl/cmd/grpcurl/... \
 		github.com/go-bindata/go-bindata/... \
 		github.com/elazarl/go-bindata-assetfs/... 
 
@@ -92,9 +91,8 @@ install:
     	github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
     	google.golang.org/protobuf/cmd/protoc-gen-go \
     	google.golang.org/grpc/cmd/protoc-gen-go-grpc \
-		github.com/fullstorydev/grpcurl/cmd/grpcurl \
-		github.com/go-bindata/go-bindata \
-		github.com/elazarl/go-bindata-assetfs
+		github.com/go-bindata/go-bindata/go-bindata \
+		github.com/elazarl/go-bindata-assetfs/go-bindata-assetfs
 
 	@echo "install finished"
 
@@ -143,18 +141,28 @@ proto:
 #--openapiv2_opt=disable_service_tags=true
 
 swagger:
-	@go-bindata --nocompress -pkg swagger -o pkg/swagger/data.go third_party/swagger-ui/...
+#@go-bindata --nocompress -pkg swagger -o pkg/swagger/data.go third_party/swagger-ui/...
+	@go-bindata-assetfs -pkg swagger -o pkg/swagger/asset.go third_party/swagger-ui/...
 	@protoc --proto_path=./api \
 			--proto_path=./third_party \
 			--openapiv2_out=logtostderr=true:./api/openapi \
 			$(API_PROTO_FILES)
 
-# github.com/fullstorydev/grpcurl/cmd/grpcurl@latest
+#usage:
+# grpcurl.
+## 1. grpcurl localhost:8080 list helloworld.api.v1.HelloworldService //展示当前服务可用接口
+## 2. grpcurl localhost:8080 describe helloworld.api.v1.HelloworldService.Login //显示当前接口详情内容
+## 3. grpcurl -d '{"userName": "hello", "password": "world"}' localhost:8080 helloworld.api.v1.HelloworldService/Login
+# grpcui.
+## grpcui -plaintext 您的app服务地址  //开启一个ui可视化界面操作grpc接口调用
+## eg: grpcui -plaintext localhost:8080
 tool:
+	@go get \
+		github.com/fullstorydev/grpcurl/... \
+		github.com/fullstorydev/grpcui/...
+
 	@go install \
-		github.com/fullstorydev/grpcui/cmd/grpcui@latest
+		github.com/fullstorydev/grpcurl/cmd/grpcurl \
+		github.com/fullstorydev/grpcui/cmd/grpcui \
 
 	@echo "install grpc tools finished"
-#usage: grpcui -plaintext 您的app服务地址 
-#eg: grpcui -plaintext localhost:8080
-			
