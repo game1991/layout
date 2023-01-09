@@ -86,6 +86,7 @@ func init() {
 // APP ...
 type APP struct {
 	ctx    context.Context
+	opts   options
 	sigs   []os.Signal
 	cancel func()
 	server *http.Server
