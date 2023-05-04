@@ -2,7 +2,7 @@ syntax="proto3";
 
 package helloworld.api.v1;
 
-option go_package = "helloworld/api/proto/v1;v1";
+option go_package = "git.xq5.com/golang/helloworld/api/proto/v1;v1";
 
 
 message HelloworldRequset {

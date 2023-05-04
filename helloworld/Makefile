@@ -67,24 +67,43 @@ INTERNAL_PROTO_FILES=$(shell find internal -name *.proto)
 API_PROTO_FILES=$(shell find api -name *.proto)
 endif
 
+#project name
+PROJECT_NAME :=$(shell echo $(shell pwd)|awk -F '/' '{ print $$NF }')
+#image
+IMAGE ?=golang:1.19-bullseye
+# bin name
 BIN ?=helloworld
 # service name
 NAME ?=helloworld
+# pb generate file
+API_PB_FILES ?=./api/proto/*/
+# config pb generate file
+CONF_PB_FILES ?=./internal/conf/
 
 $(info $$BIN=$(BIN))
 # $(info $$INTERNAL_PROTO_FILES=$(INTERNAL_PROTO_FILES))
 # $(info $$API_PROTO_FILES=$(API_PROTO_FILES))
 
-.PHONY: install info print build config proto swagger tool
+# docker buildkit
+DOCKER_BUILDKIT:=$(if $(DOCKER_BUILDKIT),$(DOCKER_BUILDKIT),DOCKER_BUILDKIT=1)
+# image base
+DOCKER_BASE:=$(if $(DOCKER_BASE),$(DOCKER_BASE),local/app)
+# image tag
+DOCKER_TAG:=$(if $(DOCKER_TAG),$(DOCKER_TAG),$(shell echo $(ARCH)|awk '{ sub(/\//,"-"); print $$0 }'))
+
+.PHONY: install info print build config proto swagger tool run docker
 
 install:
 	@go get \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
 		github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2 \
-		google.golang.org/protobuf/cmd/protoc-gen-go \
 		google.golang.org/grpc/cmd/protoc-gen-go-grpc \
+		github.com/favadi/protoc-go-inject-tag \
+		github.com/DATA-DOG/go-sqlmock \
+		github.com/alicebob/miniredis/v2 \
 		github.com/go-bindata/go-bindata/... \
-		github.com/elazarl/go-bindata-assetfs/... 
+		github.com/go-bindata/go-bindata/go-bindata \
+		github.com/elazarl/go-bindata-assetfs/... \
 
 	@go install \
     	github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway \
@@ -92,16 +111,22 @@ install:
     	google.golang.org/protobuf/cmd/protoc-gen-go \
     	google.golang.org/grpc/cmd/protoc-gen-go-grpc \
 		github.com/go-bindata/go-bindata/go-bindata \
-		github.com/elazarl/go-bindata-assetfs/go-bindata-assetfs
+		github.com/elazarl/go-bindata-assetfs/go-bindata-assetfs \
+		github.com/favadi/protoc-go-inject-tag \
+		github.com/DATA-DOG/go-sqlmock \
+		github.com/alicebob/miniredis/v2 \
 
 	@echo "install finished"
 
 info:
+	@echo $(PROJECT_NAME)
 	@echo $(GOBIN)
 	@echo $(GOPATH)
 	@echo $(BIN)
 	@echo $(INTERNAL_PROTO_FILES)
+	@echo $(CONF_PB_FILES)
 	@echo $(API_PROTO_FILES)
+	@echo $(API_PB_FILES)
 
 build:
 	chmod -R a+rx ./build/scripts
@@ -120,6 +145,8 @@ build:
         GOFLAGS=$(GOFLAGS)    \
         ./build/scripts/build.sh \
 	"
+run: swagger build
+	${BIN} serve -d ./configs
 
 print:
 	echo "version: $(VERSION)"
@@ -129,24 +156,39 @@ config:
 	       --proto_path=./third_party \
  	       --go_out=paths=source_relative:./internal \
 	       $(INTERNAL_PROTO_FILES)
-
+	@protoc-go-inject-tag  -input=${CONF_PB_FILES}*.pb.go
 # --grpc-gateway_out=paths=source_relative:./api
 proto:
 	@protoc --proto_path=./api \
-	       --proto_path=./third_party \
- 	       --go_out=paths=source_relative:./api \
- 	       --go-grpc_out=paths=source_relative:./api\
-	       $(API_PROTO_FILES)
-
+	        --proto_path=./third_party \
+ 	        --go_out=paths=source_relative:./api \
+ 	        --go-grpc_out=paths=source_relative:./api\
+	        $(API_PROTO_FILES)
+	@protoc-go-inject-tag  -input=${API_PB_FILES}*.pb.go
 #--openapiv2_opt=disable_service_tags=true
 
 swagger:
-#@go-bindata --nocompress -pkg swagger -o pkg/swagger/data.go third_party/swagger-ui/...
-	@go-bindata-assetfs -pkg swagger -o pkg/swagger/asset.go third_party/swagger-ui/...
+# 使用插件生成swagger.json文件
 	@protoc --proto_path=./api \
 			--proto_path=./third_party \
-			--openapiv2_out=logtostderr=true:./api/openapi \
+			--openapiv2_out=logtostderr=true:./api/swagger \
+			--experimental_allow_proto3_optional \
 			$(API_PROTO_FILES)
+# 
+# @go-bindata --nocompress -pkg swagger -o pkg/swagger/data.go third_party/swagger-ui/...
+
+#swagger.json
+	@go-bindata-assetfs -pkg swagger -o pkg/swagger/asset.go api/swagger/proto/v1/...
+#swagger-ui
+	@go-bindata-assetfs -pkg swaggerUI -o pkg/swagger-ui/asset.go third_party/swagger-ui/...
+
+# 
+# @go-bindata --nocompress -pkg swagger -o pkg/swagger/data.go third_party/swagger-ui/...
+
+#swagger.json
+	@go-bindata-assetfs -pkg swagger -o pkg/swagger/asset.go api/swagger/proto/v1/...
+#swagger-ui
+	@go-bindata-assetfs -pkg swaggerUI -o pkg/swagger-ui/asset.go third_party/swagger-ui/...
 
 #usage:
 # grpcurl.
@@ -166,3 +208,12 @@ tool:
 		github.com/fullstorydev/grpcui/cmd/grpcui \
 
 	@echo "install grpc tools finished"
+
+docker:
+	$(DOCKER_BUILDKIT) docker build \
+	--no-cache \
+	--build-arg IMAGE=$(IMAGE) \
+	--build-arg NAME=$(NAME) \
+	--build-arg PROJECT_NAME=$(PROJECT_NAME) \
+	-t $(DOCKER_BASE):$(DOCKER_TAG) \
+	-f Dockerfile . || exit 1

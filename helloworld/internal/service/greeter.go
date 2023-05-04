@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	v1 "helloworld/api/proto/v1"
-	"helloworld/internal/repository"
+
+	v1 "git.xq5.com/golang/helloworld/api/proto/v1"
+	"git.xq5.com/golang/helloworld/internal/repository"
 )
 
 // GreeterSrv .

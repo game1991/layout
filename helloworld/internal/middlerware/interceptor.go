@@ -2,9 +2,10 @@ package middlerware
 
 import (
 	"context"
-	"helloworld/internal/pkg/ecode"
-	"helloworld/pkg/log"
 	"runtime"
+
+	"git.xq5.com/golang/helloworld/internal/pkg/ecode"
+	"git.xq5.com/golang/helloworld/pkg/log"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

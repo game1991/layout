@@ -2,27 +2,36 @@ package controller
 
 import (
 	"context"
-	"helloworld/internal/service"
+
+	"git.xq5.com/golang/helloworld/internal/conf"
+	"git.xq5.com/golang/helloworld/internal/middlerware"
+	"git.xq5.com/golang/helloworld/internal/service"
 
 	"github.com/gin-gonic/gin"
 )
 
 // Handler ...
 type Handler struct {
-	srv *service.Service
+	srv         *service.Service
+	sessionConf *conf.Session
 }
 
 // NewHandler ...
-func NewHandler(srv *service.Service) *Handler {
-	return &Handler{srv: srv}
+func NewHandler(srv *service.Service, sessionConf *conf.Session) *Handler {
+	return &Handler{
+		srv:         srv,
+		sessionConf: sessionConf,
+	}
 }
 
 // APIHandler ...
 func (h *Handler) APIHandler(ctx context.Context, g gin.IRouter) {
-
+	g.Use(middlerware.Context, middlerware.Session(h.sessionConf), middlerware.RequestID(), middlerware.Logg())
 	g.POST("login", h.login)
+	g.GET("logout", h.logout)
 
-	userG := g.Group("user")
+	loginCheck := g.Group("", middlerware.SessionAuth(h.sessionConf))
+	userG := loginCheck.Group("user")
 	{
 		userG.POST("", h.create)
 		userG.GET("", h.getUser)
@@ -30,6 +39,16 @@ func (h *Handler) APIHandler(ctx context.Context, g gin.IRouter) {
 		userG.POST("notify", h.notify)
 	}
 
+	module1 := loginCheck.Group("module1")
+	{
+		module1.Any("")
+	}
+
+	module2 := loginCheck.Group("module2")
+	{
+		module2.Any("")
+	}
+	//... ...
 }
 
 // SYSHandler ...

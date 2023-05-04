@@ -76,12 +76,12 @@ func (l *zaplog) String() string {
 	return "zap"
 }
 
-//Options 获取参数
+// Options 获取参数
 func (l *zaplog) Options() logger.Options {
 	return logger.Options{}
 }
 
-//NewLogger ...
+// NewLogger ...
 func NewMicroLogger(logger ...*zap.Logger) *zaplog {
 	l := &zaplog{}
 	if len(logger) > 0 {
@@ -96,7 +96,7 @@ func NewMicroLogger(logger ...*zap.Logger) *zaplog {
 	return l
 }
 
-//loggerToZapLevel 将micro中logger的level转化成zap的level类型
+// loggerToZapLevel 将micro中logger的level转化成zap的level类型
 func loggerToZapLevel(level logger.Level) Level {
 	switch level {
 	case logger.TraceLevel, logger.DebugLevel:

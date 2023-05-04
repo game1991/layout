@@ -84,9 +84,7 @@ func WithJSONEncode(isJSON bool) Option {
 // WithDir 设置日志文件路径
 func WithDir(dir string) Option {
 	return func(o *Options) {
-		if strings.HasSuffix(dir, "/") {
-			dir = dir[:len(dir)-1]
-		}
+		dir = strings.TrimSuffix(dir, "/")
 		o.Dir = dir
 	}
 }

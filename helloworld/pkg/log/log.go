@@ -280,14 +280,21 @@ func (l *Logger) SetDefaultDir(dir string) *Logger {
 }
 
 // Sync flushes buffer data into disk
-func (l *Logger) Sync() {
-	l.sugar.Sync()
-	l.unsugar.Sync()
+func (l *Logger) Sync() error {
+	if err := l.sugar.Sync(); err != nil {
+		return err
+	}
+	if err := l.unsugar.Sync(); err != nil {
+		return err
+	}
+	return nil
 }
 
 // Close flushes buffer and closes logger fd
 func (l *Logger) Close() error {
-	l.Sync()
+	if err := l.Sync(); err != nil {
+		return err
+	}
 
 	if l.rotateLog != nil {
 		return l.rotateLog.Close()

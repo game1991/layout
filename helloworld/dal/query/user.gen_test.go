@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"testing"
 
-	"helloworld/dal/model"
+	"git.xq5.com/golang/helloworld/dal/model"
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"

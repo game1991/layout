@@ -2,11 +2,17 @@ package service
 
 import (
 	"context"
-	v1 "helloworld/api/proto/v1"
-	"helloworld/internal/pkg/ecode"
-	"helloworld/internal/repository"
 	"time"
 
+	v1 "git.xq5.com/golang/helloworld/api/proto/v1"
+	"git.xq5.com/golang/helloworld/internal/conf"
+	"git.xq5.com/golang/helloworld/internal/pkg/constant"
+	"git.xq5.com/golang/helloworld/internal/pkg/ecode"
+	"git.xq5.com/golang/helloworld/internal/repository"
+	"github.com/gin-contrib/sessions"
+
+	pContext "git.xq5.com/golang/helloworld/internal/pkg/context"
+	iregexp "git.xq5.com/golang/helloworld/pkg/regexp"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -14,18 +20,39 @@ import (
 
 // UserSrv ...
 type userSrv struct {
-	ui repository.UserInter
+	ui          repository.UserInter
+	sessionConf *conf.Session
 }
 
 // NewUserSrv ...
-func NewUserSrv(ui repository.UserInter) *userSrv {
-	return &userSrv{ui: ui}
+func NewUserSrv(ui repository.UserInter, sessionConf *conf.Session) *userSrv {
+	return &userSrv{
+		ui:          ui,
+		sessionConf: sessionConf,
+	}
 }
 
 // Login ...
 func (us *userSrv) Login(ctx context.Context, req *v1.LoginRequest) (*v1.LoginResponse, error) {
 	// TODO 检验账号密码
 
+	// 设置session
+	// 从ctx读取gin.Context
+	gCtx := pContext.GetGinCtx(ctx)
+	if gCtx == nil {
+		return nil, status.Errorf(codes.Internal, "ctx gin get err")
+	}
+	sess := sessions.DefaultMany(gCtx, us.sessionConf.GetSessionNameFromKey("user"))
+	sess.Set(constant.USERKEY, &v1.UserInfo{
+		Id:       1,
+		UserName: "hello",
+		NickName: "您好",
+		Age:      18,
+		Gender:   v1.UserInfo_FEMALE,
+	})
+	if err := sess.Save(); err != nil {
+		return nil, err
+	}
 	return &v1.LoginResponse{
 		LoginedAt: timestamppb.New(time.Now()),
 	}, nil
@@ -82,10 +109,15 @@ func (us *userSrv) Notify(ctx context.Context, in *v1.NotifyRequest) (*v1.Notify
 	}
 	if in.GetPhone() != "" {
 		// 校验手机号
-
+		if !iregexp.ValidPhone(in.GetPhone()) {
+			return nil, ecode.Fail(ecode.BadRequest, "phone regexp not pass")
+		}
 	}
 	if in.GetEmail() != "" {
 		// 校验邮箱
+		if !iregexp.ValidEmail(in.GetEmail()) {
+			return nil, ecode.Fail(ecode.BadRequest, "email regexp not pass")
+		}
 	}
 	// TODO send msg
 	return &v1.NotifyResponse{IsSend: true}, nil

@@ -15,5 +15,6 @@ func BindataFS() *assetfs.AssetFS {
 
 // AssetFS go-bindata-assetfs 使用方式
 func AssetFS() *assetfs.AssetFS {
-	return assetFS()
+	a := assetFS()
+	return a
 }

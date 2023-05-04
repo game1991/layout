@@ -5,10 +5,10 @@ import (
 	"errors"
 
 	//"git.xq5.com/office/survey-backend/pkg/captcha"
-	pErrors "helloworld/internal/pkg/errors"
-	"helloworld/pkg/response"
+	pErrors "git.xq5.com/golang/helloworld/internal/pkg/errors"
+	"git.xq5.com/golang/helloworld/pkg/response"
 
-	pStatus "helloworld/pkg/status"
+	pStatus "git.xq5.com/golang/helloworld/pkg/status"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -112,10 +112,10 @@ func init() {
 // WrapErrorWithCode 封装错误通过code判断
 func WrapErrorWithCode(err error) response.Error {
 	code := InternalServerError
-	switch err.(type) {
+	switch errAssert := err.(type) {
 	case response.Error:
-		respErr := err.(response.Error)
-		return respErr
+		//respErr := err.(response.Error)
+		return errAssert
 	// case *rpc.Error:
 	// 	e := err.(*goMicroErr.Error)
 	// 	switch e.Code {
@@ -129,8 +129,7 @@ func WrapErrorWithCode(err error) response.Error {
 		code = HTTPStatusFromCode(st.Code())
 
 	case error:
-		e := err.(error)
-		switch e {
+		switch errAssert {
 		//case captcha.ErrCaptchaNotCoolDown:
 		//	code = ErrCaptchaCoolDown
 		//case captcha.ErrCaptchaVerifyFailed:
@@ -152,16 +151,14 @@ func HTTPStatusFromCode(code codes.Code) int {
 // ConvertToGrpcErr 将自定义错误转化为grpc错误
 func ConvertToGrpcErr(err error) error {
 	code := codes.Internal
-	switch err.(type) {
+	switch errAssert := err.(type) {
 	case (interface {
 		GRPCStatus() *status.Status
 	}):
 		return err
 
 	case response.Error:
-		respErr := err.(response.Error)
-
-		switch respErr.Code() {
+		switch errAssert.Code() {
 		// 针对当前系统中初始设定的一些错误
 		case BadRequest:
 			code = codes.InvalidArgument
@@ -174,12 +171,11 @@ func ConvertToGrpcErr(err error) error {
 		case DatabaseOperationError:
 			code = codes.DataLoss
 		default:
-			code = codes.Code(respErr.Code())
+			code = codes.Code(errAssert.Code())
 		}
 
 	case error:
-		e := err.(error)
-		switch e {
+		switch errAssert {
 		case ErrBadRequest:
 			// 这里是常见的通用错误
 			code = codes.InvalidArgument

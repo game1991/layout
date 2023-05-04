@@ -3,8 +3,9 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"helloworld/dal/query"
-	pErr "helloworld/internal/pkg/errors"
+
+	"git.xq5.com/golang/helloworld/dal/query"
+	pErr "git.xq5.com/golang/helloworld/internal/pkg/errors"
 )
 
 // Greeter ...

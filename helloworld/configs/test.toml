@@ -1,23 +1,55 @@
 [Server]
-    address = ":8080" # 常见容器中运行
-	[Server.timeout]
-		seconds = 5
+	address = ":8080" # 常见容器中运行
+[Server.timeout]
+	seconds = 5
 [MySQL]
-	dsn="developer:zonst!123@(192.168.10.2:3306)/helloworld?charset=utf8mb4&parseTime=True&loc=Local"
-[Log]
-    output = "stdout"
-    level = "dev"
-    jsonEncode = true
-    dir = "/tmp/api"
-    fileName = "default.log"
-    addCaller = true
-    callerSkip = 2
-    maxSize = 128
-    maxAge = 30
-    maxBackups = 7
-    caa = true
-    [Log.fields] # 每条日志都带这个关键字
-        appName = "helloworld"
+	dsn = "developer:zonst!123@(192.168.10.2:3306)/helloworld?charset=utf8mb4&parseTime=True&loc=Local"
 
-[swagger]   # swagger 开关  false 禁用 true 启用
-    passed = true
+[Session]
+	RedisConnectType = "tcp"
+	Host             = "192.168.10.15"
+	Port             = 6379
+	Password         = "office0918"
+	DbNumber         = 1
+	MaxIdle          = 15
+	Secret           = "secretsession"
+	Path             = "/"
+	MaxAge           = 86400
+	HTTPOnly         = true
+	SameSite         = 3
+	ReaderTimeout    = 10
+	WriteTimeout     = 10
+	PoolSize         = 100
+[Session.SessionName]
+	user  = "api"
+	admin = "admin-api"
+	name3 = "api-name3"
+	name4 = "api-name4"
+#   .....  //可以填写多个session名称
+[Log]
+	output     = "stdout"
+	level      = "dev"
+	jsonEncode = true
+	dir        = "/tmp/api"
+	fileName   = "default.log"
+	addCaller  = true
+	callerSkip = 2
+	maxSize    = 128
+	maxAge     = 30
+	maxBackups = 7
+	caa        = true
+[Log.fields] # 每条日志都带这个关键字
+	appName = "helloworld"
+
+[swagger] # swagger 开关  false 禁用 true 启用
+	passed = true
+
+[app]
+	RunMode = "dev"
+
+[horus]
+	serverName   = "helloworld-api"
+	endpoints    = [ "122.112.243.235:2379" ]
+	disablePProf = false
+[horus.ports]
+	http = 8080

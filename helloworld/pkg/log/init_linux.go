@@ -20,7 +20,7 @@ func init() {
 	go func() {
 		if runtime.GOOS != "windows" {
 			for {
-				c := make(chan os.Signal)
+				c := make(chan os.Signal, 1)
 				signal.Notify(c, syscall.SIGUSR1, syscall.SIGUSR2)
 				s := <-c
 

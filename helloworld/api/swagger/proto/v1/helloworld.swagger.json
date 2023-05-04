@@ -1,0 +1,334 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "proto/v1/helloworld.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "HelloworldService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/login": {
+      "post": {
+        "summary": "user service",
+        "operationId": "HelloworldService_Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LoginResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1LoginRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HelloworldService"
+        ]
+      }
+    },
+    "/v1/logout": {
+      "get": {
+        "summary": "登出接口",
+        "operationId": "HelloworldService_Logout",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LogoutResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "HelloworldService"
+        ]
+      }
+    },
+    "/v1/sayhello": {
+      "get": {
+        "summary": "greeter service",
+        "operationId": "HelloworldService_SayHello",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1HelloworldReply"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HelloworldService"
+        ]
+      }
+    },
+    "/v1/user": {
+      "get": {
+        "operationId": "HelloworldService_User",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UserInfo"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "HelloworldService"
+        ]
+      }
+    },
+    "/v1/user/notify": {
+      "post": {
+        "operationId": "HelloworldService_Notify",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1NotifyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1NotifyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HelloworldService"
+        ]
+      }
+    },
+    "/v1/user/updateInfo": {
+      "put": {
+        "operationId": "HelloworldService_UpdateInfo",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateInfoResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpdateInfoRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HelloworldService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "UserInfoGender": {
+      "type": "string",
+      "enum": [
+        "SECRET",
+        "MALE",
+        "FEMALE"
+      ],
+      "default": "SECRET"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1HelloworldReply": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "v1LoginRequest": {
+      "type": "object",
+      "properties": {
+        "userName": {
+          "type": "string",
+          "description": "用户名",
+          "title": "@gotags: form:\"userName\" json:\"user_name\" binding:\"required\""
+        },
+        "password": {
+          "type": "string",
+          "description": "密码",
+          "title": "@gotags: form:\"password\" json:\"password\" binding:\"required\""
+        }
+      },
+      "title": "登录请求参数 示例是使用自定义tag 可以使用以下写法定义自己的tag"
+    },
+    "v1LoginResponse": {
+      "type": "object",
+      "properties": {
+        "loginedAt": {
+          "type": "string",
+          "format": "date-time",
+          "title": "登录时间"
+        }
+      }
+    },
+    "v1LogoutResponse": {
+      "type": "object"
+    },
+    "v1NotifyRequest": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        }
+      }
+    },
+    "v1NotifyResponse": {
+      "type": "object",
+      "properties": {
+        "isSend": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1UpdateInfoRequest": {
+      "type": "object",
+      "properties": {
+        "file": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "v1UpdateInfoResponse": {
+      "type": "object",
+      "properties": {
+        "affectedRows": {
+          "type": "string",
+          "format": "int64"
+        },
+        "isSucceed": {
+          "type": "boolean"
+        }
+      }
+    },
+    "v1UserInfo": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "userName": {
+          "type": "string"
+        },
+        "nickName": {
+          "type": "string"
+        },
+        "age": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "gender": {
+          "$ref": "#/definitions/UserInfoGender"
+        }
+      }
+    }
+  }
+}

@@ -3,10 +3,11 @@ package conf
 import (
 	"errors"
 
-	"helloworld/internal/pkg/env"
-	"helloworld/internal/pkg/store"
-	"helloworld/pkg/log"
 	"os"
+
+	"git.xq5.com/golang/helloworld/internal/pkg/env"
+	"git.xq5.com/golang/helloworld/internal/pkg/store"
+	"git.xq5.com/golang/helloworld/pkg/log"
 
 	"github.com/ismdeep/args"
 	"github.com/spf13/viper"
@@ -48,11 +49,7 @@ func (rm RunMode) Has(runmode ...RunMode) bool {
 	for _, item := range runmode {
 		flag |= item.Value()
 	}
-	if flag&rm.Value() == rm.Value() {
-		return true
-	}
-	return false
-
+	return flag&rm.Value() == rm.Value()
 }
 
 // env name
@@ -138,8 +135,7 @@ func Log() (conf *log.Options, err error) {
 
 // GetServer get server conf info
 func GetServer() (conf *Server, err error) {
-	conf = &Server{}
-	err = viper.UnmarshalKey("Server", conf)
+	err = viper.UnmarshalKey("Server", &conf)
 	if conf == nil {
 		err = errors.New("Server 配置为空")
 	}
@@ -155,10 +151,61 @@ func MySQL() (conf *store.Config, err error) {
 	return
 }
 
+// Session conf ...
+func SessionConf() (conf *Session, err error) {
+	err = viper.UnmarshalKey("Session", &conf)
+	if conf == nil {
+		err = errors.New("Session 配置为空")
+	}
+	if conf.SessionName == nil {
+		err = errors.New("SessionName 配置为空")
+	}
+	return
+}
+
+func (s *Session) SessionSecret() [][]byte {
+	result := make([][]byte, len(s.Secret))
+	for i, item := range s.Secret {
+		if i%2 == 1 {
+			bts := []byte(item)
+			switch len(bts) {
+			case 16, 24, 32:
+				result[i] = bts
+			default:
+				panic("session Secret 设置错误")
+			}
+		} else {
+			result[i] = []byte(item)
+		}
+	}
+	return result
+}
+
+func (s *Session) SessionNames() (result []string) {
+	for _, v := range s.SessionName {
+		result = append(result, v)
+	}
+	return
+}
+
+// 获取session名称 入参填写配置文件中设置的key键
+func (s *Session) GetSessionNameFromKey(key string) string {
+	if v, ok := s.SessionName[key]; ok {
+		return v
+	}
+	return ""
+}
+
+func Horus() (cfg *Hours, err error) {
+	if err := viper.UnmarshalKey("horus", &cfg); err != nil {
+		panic("unmarshal horus config failed")
+	}
+	return cfg, nil
+}
+
 func readAPPConfig() (conf *APPConfig, err error) {
 	if appConfig == nil {
-		conf = &APPConfig{}
-		err = viper.UnmarshalKey("app", conf)
+		err = viper.UnmarshalKey("app", &conf)
 		// if len(conf.Referer) == 0 {
 		// 	conf.Referer = []string{"*.zonst.com", "*.zonst.com"}
 		// }

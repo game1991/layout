@@ -16,7 +16,7 @@ import (
 
 	"gorm.io/plugin/dbresolver"
 
-	"helloworld/dal/model"
+	"git.xq5.com/golang/helloworld/dal/model"
 )
 
 func newUser(db *gorm.DB, opts ...gen.DOOption) user {

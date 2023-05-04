@@ -30,7 +30,7 @@ func uuid32(u *uuid.UUID) string {
 
 var uuid22 *base64.Encoding
 
-const encodeStd = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+// const encodeStd = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 
 // UUID22 使用base64编码的uuid字符串(精简10Byte的存储空间)
 func UUID22() string {

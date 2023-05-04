@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package helloworld.api.v2;
+
+option go_package = "git.xq5.com/golang/helloworld/api/proto/v2;v2";
+
+import "google/api/annotations.proto";
+import "proto/v1/message.greeter.proto";
+import "proto/v1/message.user.proto";
+
+service HelloworldService {
+  // user service
+  rpc Login(v1.LoginRequest) returns (v1.LoginResponse) {
+    // option type is http
+    option (google.api.http) = {
+      // this is url, for RESTfull/JSON api and method
+      // this line means when a HTTP post request comes with "/v1/login" call
+      // this rpc method over this service
+      post: "/v2/login"
+      body: "*"
+    };
+  };
+  /*
+   * 登出接口
+   */
+  rpc Logout(v1.LogoutRequest) returns (v1.LogoutResponse) {
+    option (google.api.http) = {
+      // this is url, for RESTfull/JSON api and method
+      // this line means when a HTTP get request comes with "/v1/logout" call
+      // this rpc method over this service
+      get: "/v2/logout"
+    };
+  }
+
+  rpc User(v1.UserRequest) returns (v1.UserInfo) {
+    // option type is http
+    option (google.api.http) = {
+      // this is url, for RESTfull/JSON api and method
+      // this line means when a HTTP post request comes with "/v1/login" call
+      // this rpc method over this service
+      get: "/v2/user"
+    };
+  }
+
+  // greeter service
+  rpc SayHello(v1.HelloworldRequset) returns (v1.HelloworldReply) {
+    // option type is http
+    option (google.api.http) = {
+      // this is url, for RESTfull/JSON api and method
+      // this line means when a HTTP post request comes with "/v1/sayHello" call
+      // this rpc method over this service
+      get: "/v2/sayhello"
+    };
+  }
+}

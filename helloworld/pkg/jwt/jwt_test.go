@@ -16,12 +16,12 @@ func TestJWT(t *testing.T) {
 	t.Log(code)
 	// 解密失败
 	errJwtSecret := "1223456"
-	res, err := JWTDecode(errJwtSecret, code)
+	_, err = JWTDecode(errJwtSecret, code)
 	if err != nil {
 		t.Log(err)
 	}
 	// 正确解密
-	res, err = JWTDecode(jwtSecrect, code)
+	res, err := JWTDecode(jwtSecrect, code)
 	if err != nil {
 		t.Log(err)
 		return

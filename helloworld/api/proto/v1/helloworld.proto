@@ -1,63 +1,76 @@
-syntax="proto3";
+syntax = "proto3";
 
 package helloworld.api.v1;
 
-option go_package = "helloworld/api/proto/v1;v1";
+option go_package = "git.xq5.com/golang/helloworld/api/proto/v1;v1";
 
 import "google/api/annotations.proto";
 import "proto/v1/message.greeter.proto";
 import "proto/v1/message.user.proto";
 
 service HelloworldService {
+  // user service
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    // option type is http
+    option (google.api.http) = {
+      // this is url, for RESTfull/JSON api and method
+      // this line means when a HTTP post request comes with "/v1/login" call
+      // this rpc method over this service
+      post: "/v1/login"
+      body: "*"
+    };
+  };
+  /*
+   * 登出接口
+   */
+  rpc Logout(LogoutRequest) returns (LogoutResponse) {
+    option (google.api.http) = {
+      // this is url, for RESTfull/JSON api and method
+      // this line means when a HTTP get request comes with "/v1/logout" call
+      // this rpc method over this service
+      get: "/v1/logout"
+    };
+  }
 
-	// user service
-	rpc Login (LoginRequest) returns (LoginResponse){
-		// option type is http
-		option (google.api.http) = {
-			// this is url, for RESTfull/JSON api and method
-			// this line means when a HTTP post request comes with "/v1/login" call this rpc method over this service
-			  post: "/v1/login"
-			  body: "*"
-			};
-	};
+  rpc User(UserRequest) returns (UserInfo) {
+    // option type is http
+    option (google.api.http) = {
+      // this is url, for RESTfull/JSON api and method
+      // this line means when a HTTP post request comes with "/v1/login" call
+      // this rpc method over this service
+      get: "/v1/user"
+    };
+  }
 
-	rpc User (UserRequest) returns (UserInfo){
-		// option type is http
-		option (google.api.http) = {
-			// this is url, for RESTfull/JSON api and method
-			// this line means when a HTTP post request comes with "/v1/login" call this rpc method over this service
-			  get: "/v1/user"
-			};
-	}
+  rpc UpdateInfo(UpdateInfoRequest) returns (UpdateInfoResponse) {
+    // option type is http
+    option (google.api.http) = {
+      // this is url, for RESTfull/JSON api and method
+      // this line means when a HTTP post request comes with
+      // "/v1/user/updateInfo" call this rpc method over this service
+      put: "/v1/user/updateInfo"
+      body: "*"
+    };
+  };
+  rpc Notify(NotifyRequest) returns (NotifyResponse) {
+    // option type is http
+    option (google.api.http) = {
+      // this is url, for RESTfull/JSON api and method
+      // this line means when a HTTP post request comes with
+      // "/v1/user/updateInfo" call this rpc method over this service
+      post: "/v1/user/notify"
+      body: "*"
+    };
+  };
 
-	rpc UpdateInfo (UpdateInfoRequest) returns (UpdateInfoResponse){
-		// option type is http
-		option (google.api.http) = {
-			// this is url, for RESTfull/JSON api and method
-			// this line means when a HTTP post request comes with "/v1/user/updateInfo" call this rpc method over this service
-			  post: "/v1/user/updateInfo"
-			  body: "*"
-			};
-	};
-	rpc Notify (NotifyRequest) returns (NotifyResponse){
-		// option type is http
-		option (google.api.http) = {
-			// this is url, for RESTfull/JSON api and method
-			// this line means when a HTTP post request comes with "/v1/user/updateInfo" call this rpc method over this service
-			  post: "/v1/user/notify"
-			  body: "*"
-			};
-	};
-
-
-
-	// greeter service
-	rpc SayHello(HelloworldRequset) returns (HelloworldReply){
-		// option type is http
-		option (google.api.http) = {
-			// this is url, for RESTfull/JSON api and method
-			// this line means when a HTTP post request comes with "/v1/sayHello" call this rpc method over this service
-			  get: "/v1/sayhello"
-			};
-	}
+  // greeter service
+  rpc SayHello(HelloworldRequset) returns (HelloworldReply) {
+    // option type is http
+    option (google.api.http) = {
+      // this is url, for RESTfull/JSON api and method
+      // this line means when a HTTP post request comes with "/v1/sayHello" call
+      // this rpc method over this service
+      get: "/v1/sayhello"
+    };
+  }
 }

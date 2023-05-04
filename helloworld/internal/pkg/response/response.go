@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"runtime"
 
-	"helloworld/internal/pkg/ecode"
-	"helloworld/internal/pkg/constant"
+	"git.xq5.com/golang/helloworld/internal/pkg/constant"
+	"git.xq5.com/golang/helloworld/internal/pkg/ecode"
 
 	"go.uber.org/zap"
 
-	"helloworld/pkg/log"
-	"helloworld/pkg/response"
+	"git.xq5.com/golang/helloworld/pkg/log"
+	"git.xq5.com/golang/helloworld/pkg/response"
 
 	"github.com/gin-gonic/gin"
 	// "go.uber.org/zap"
@@ -49,7 +49,6 @@ func OK(c *gin.Context, data interface{}) {
 		Data:   data,
 	}
 	c.AbortWithStatusJSON(http.StatusOK, resp)
-	return
 }
 
 // Fail 返回错误
@@ -108,5 +107,4 @@ func Fail(c *gin.Context, err error, data ...interface{}) {
 	// c.Set(constant.RESPONSEOBJ, result)
 
 	c.AbortWithStatusJSON(http.StatusOK, result)
-	return
 }

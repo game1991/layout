@@ -3,19 +3,22 @@ package api
 import (
 	"context"
 	"errors"
-	v1 "helloworld/api/proto/v1"
-	"helloworld/build"
-	"helloworld/internal/conf"
-	"helloworld/internal/controller"
-	"helloworld/internal/middlerware"
-	"helloworld/internal/server"
-	"helloworld/internal/service"
-	"helloworld/pkg/log"
-	"helloworld/pkg/uuid"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+
+	v1 "git.xq5.com/golang/helloworld/api/proto/v1"
+	"git.xq5.com/golang/helloworld/build"
+	"git.xq5.com/golang/helloworld/internal/conf"
+	"git.xq5.com/golang/helloworld/internal/controller"
+	"git.xq5.com/golang/helloworld/internal/middlerware"
+	"git.xq5.com/golang/helloworld/internal/pkg/env"
+	"git.xq5.com/golang/helloworld/internal/server"
+	"git.xq5.com/golang/helloworld/internal/service"
+	"git.xq5.com/golang/helloworld/pkg/log"
+	"git.xq5.com/golang/helloworld/pkg/uuid"
+	horus "git.xq5.com/middleground-open/HorusSDK"
 
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/grpc/reflection"
@@ -55,9 +58,15 @@ var StartCmd = &cobra.Command{
 		if err != nil {
 			log.Panic("mysql", log.FieldErr(err))
 		}
-		log.Debug("read config", "serverConf", serverConf, "mysqlConf", mysqlConf)
 
-		app, cleanup, err := wireApp(serverConf, *mysqlConf)
+		sessionConf, err := conf.SessionConf()
+		if err != nil {
+			log.Panic("sessionConf", log.FieldErr(err))
+		}
+
+		log.Debug("read config", "serverConf", serverConf, "mysqlConf", mysqlConf, "sessionConf", sessionConf)
+
+		app, cleanup, err := wireApp(serverConf, sessionConf, *mysqlConf)
 		if err != nil {
 			log.Errorf("wireApp error : %v", err)
 			return err
@@ -69,7 +78,7 @@ var StartCmd = &cobra.Command{
 		log.Infof("SystemInfo:[%v]", build.SystemInfo)
 		// start and wait for stop signal
 		if err := app.Run(); err != nil {
-			panic(err)
+			log.Panic("app.Run", err)
 		}
 
 		return nil
@@ -86,7 +95,7 @@ func init() {
 // APP ...
 type APP struct {
 	ctx    context.Context
-	opts   options
+	opts   *options
 	sigs   []os.Signal
 	cancel func()
 	server *http.Server
@@ -133,7 +142,7 @@ func NewApp(
 	v1.RegisterHelloworldServiceServer(grpcServer, service)
 
 	// 初始化一个空Gin路由
-	engine := gin.Default()
+	engine := MustEngineWithHorus()
 	/***** 添加你的api路由吧 *****/
 	v1Engine := engine.Group("v1")
 	handler.APIHandler(o.ctx, v1Engine)
@@ -149,6 +158,7 @@ func NewApp(
 
 	return &APP{
 		ctx:    ctx,
+		opts:   o,
 		sigs:   o.sigs,
 		cancel: cancel,
 		server: &http.Server{Addr: conf.GetAddr(), Handler: httpHandler},
@@ -212,4 +222,25 @@ func (a *APP) Stop() error {
 		a.cancel()
 	}
 	return nil
+}
+
+func MustEngineWithHorus() *gin.Engine {
+	engine := gin.Default()
+
+	//skip horus while in dev mode
+	if env.IsDevelopment() {
+		return engine
+	}
+
+	cfg, _ := conf.Horus()
+
+	horusServer := horus.New(
+		horus.WithServerName(cfg.ServerName),
+		horus.WithEndpoints(cfg.Endpoints),
+		horus.WithPorts(cfg.Ports),
+		horus.WithDisablePprof(cfg.DisablePProf),
+	)
+	horusServer.GinRouterForPrometheus(engine)
+	engine.Use(horusServer.GinMiddlewareOpenTelemetry(true))
+	return engine
 }

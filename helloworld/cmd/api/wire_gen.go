@@ -7,18 +7,18 @@
 package api
 
 import (
+	"git.xq5.com/golang/helloworld/dal/query"
+	"git.xq5.com/golang/helloworld/internal/conf"
+	"git.xq5.com/golang/helloworld/internal/controller"
+	"git.xq5.com/golang/helloworld/internal/pkg/store"
+	"git.xq5.com/golang/helloworld/internal/repository"
+	"git.xq5.com/golang/helloworld/internal/service"
 	"gorm.io/gen"
-	"helloworld/dal/query"
-	"helloworld/internal/conf"
-	"helloworld/internal/controller"
-	"helloworld/internal/pkg/store"
-	"helloworld/internal/repository"
-	"helloworld/internal/service"
 )
 
 // Injectors from wire.go:
 
-func wireApp(server *conf.Server, config store.Config, arg ...gen.DOOption) (*APP, func(), error) {
+func wireApp(server *conf.Server, session *conf.Session, config store.Config, arg ...gen.DOOption) (*APP, func(), error) {
 	db, cleanup, err := store.NewMySQL(config)
 	if err != nil {
 		return nil, nil, err
@@ -27,9 +27,9 @@ func wireApp(server *conf.Server, config store.Config, arg ...gen.DOOption) (*AP
 	greeterInter := repository.NewGreeterInter(queryQuery)
 	userInter := repository.NewUserInter(queryQuery)
 	greeterSrv := service.NewGreeterSrv(greeterInter, userInter)
-	userSrv := service.NewUserSrv(userInter)
+	userSrv := service.NewUserSrv(userInter, session)
 	serviceService := service.NewService(greeterSrv, userSrv)
-	handler := controller.NewHandler(serviceService)
+	handler := controller.NewHandler(serviceService, session)
 	app := newApp(server, handler, serviceService)
 	return app, func() {
 		cleanup()

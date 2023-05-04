@@ -1,8 +1,7 @@
 package main
 
 import (
-	"helloworld/cmd/api"
-	"helloworld/cmd/genorm"
+	"git.xq5.com/golang/helloworld/cmd/api"
 
 	"github.com/spf13/cobra"
 )
@@ -29,7 +28,7 @@ to quickly create a Cobra application.`,
 	}
 
 	rootCMD.AddCommand(api.StartCmd)
-	rootCMD.AddCommand(genorm.GenORMCmd)
+	// rootCMD.AddCommand(genorm.GenORMCmd)
 	// rootCMD.AddCommand(cron.StartCronCmd)
 	// rootCMD.AddCommand(xxx.StartCmd)
 

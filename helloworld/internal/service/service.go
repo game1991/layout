@@ -2,7 +2,8 @@ package service
 
 import (
 	"context"
-	v1 "helloworld/api/proto/v1"
+
+	v1 "git.xq5.com/golang/helloworld/api/proto/v1"
 )
 
 // Service .

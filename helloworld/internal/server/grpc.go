@@ -1,7 +1,7 @@
 package server
 
 import (
-	"helloworld/internal/conf"
+	"git.xq5.com/golang/helloworld/internal/conf"
 
 	"google.golang.org/grpc"
 )

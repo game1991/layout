@@ -1,39 +1,50 @@
 syntax = "proto3";
 package conf.api;
 
-option go_package = "helloworld/internal/conf;conf";
+option go_package = "git.xq5.com/golang/helloworld/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
 
-
 message Server {
-	string addr=1;
-	google.protobuf.Duration timeout = 2;
+  string addr = 1;
+  google.protobuf.Duration timeout = 2;
 }
 
 message Session {
-	string RedisConnectType=1;
-	string Host=2;
-	int32 Port=3;
-	string Password=4;
-	int32 DbNumber=5;
-	int32 MaxIdle=6;
-	string Secret=7;
-	repeated string SessionName=8;
-	string Path=9;
-	int32 MaxAge=10;
-	bool HTTPOnly=11;
-	int32 SameSite=12;
+  string redisConnectType = 1;
+  string host = 2;
+  int32 port = 3;
+  string password = 4;
+  int32 dbNumber = 5;
+  int32 maxIdle = 6;
+  repeated string secret = 7;
+  // 支持配置多个sessionName key是代指标签 value是session对应的名称
+  map<string, string> sessionName = 8;
+  string path = 9;
+  int32 maxAge = 10;
+  bool httpOnly = 11;
+  int32 sameSite = 12;
 }
 
 message APPConfig {
-	string RunMode=1; // 运行模式
-	Switch Switch=2; // 开关
+  string runMode = 1;  // 运行模式
+  Switch switch = 2;   // 开关
 }
 
 message Switch {
-	bool CloseSendSMS   =1;  //关闭发送短信
-	bool CloseSendEmail =2; //关闭发送邮件
-	bool CloseValidSMS  =3;  //关闭验证短信
-	bool CloseValidEmail=4;  //关闭验证邮件
+  bool CloseSendSMS = 1;     // 关闭发送短信
+  bool CloseSendEmail = 2;   // 关闭发送邮件
+  bool CloseValidSMS = 3;    // 关闭验证短信
+  bool CloseValidEmail = 4;  // 关闭验证邮件
+}
+
+message Hours {
+  // @gotags: toml:"serverName"
+  string serverName = 1;
+  // @gotags: toml:"endpoints"
+  repeated string endpoints = 2;
+  // @gotags: toml:"ports"
+  map<string, string> ports = 3;
+  // @gotags: toml:"disablePProf"
+  bool disablePProf = 4;
 }
