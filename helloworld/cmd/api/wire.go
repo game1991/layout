@@ -4,12 +4,12 @@
 package api
 
 import (
-	"git.xq5.com/golang/helloworld/dal/query"
-	"git.xq5.com/golang/helloworld/internal/conf"
-	"git.xq5.com/golang/helloworld/internal/controller"
-	"git.xq5.com/golang/helloworld/internal/pkg/store"
-	"git.xq5.com/golang/helloworld/internal/repository"
-	"git.xq5.com/golang/helloworld/internal/service"
+	"github.com/game1991/layout/helloworld/dal/query"
+	"github.com/game1991/layout/helloworld/internal/conf"
+	"github.com/game1991/layout/helloworld/internal/controller"
+	"github.com/game1991/layout/helloworld/internal/pkg/store"
+	"github.com/game1991/layout/helloworld/internal/repository"
+	"github.com/game1991/layout/helloworld/internal/service"
 
 	"github.com/google/wire"
 	"gorm.io/gen"

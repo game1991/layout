@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	v1 "git.xq5.com/golang/helloworld/api/proto/v1"
-	"git.xq5.com/golang/helloworld/internal/repository"
+	v1 "github.com/game1991/layout/helloworld/api/proto/v1"
+	"github.com/game1991/layout/helloworld/internal/repository"
 )
 
 // GreeterSrv .

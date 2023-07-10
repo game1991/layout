@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"time"
 
-	"git.xq5.com/golang/helloworld/dal/model"
-	"git.xq5.com/golang/helloworld/dal/query"
+	"github.com/game1991/layout/helloworld/dal/model"
+	"github.com/game1991/layout/helloworld/dal/query"
 
-	pErr "git.xq5.com/golang/helloworld/internal/pkg/errors"
+	pErr "github.com/game1991/layout/helloworld/internal/pkg/errors"
 
 	"gorm.io/gen"
 	"gorm.io/gorm"

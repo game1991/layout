@@ -5,11 +5,11 @@ import (
 	"path"
 	"strings"
 
-	"git.xq5.com/golang/helloworld/pkg/log"
+	"github.com/game1991/layout/helloworld/pkg/log"
 
-	"git.xq5.com/golang/helloworld/internal/conf"
-	"git.xq5.com/golang/helloworld/pkg/swagger"
-	swaggerUI "git.xq5.com/golang/helloworld/pkg/swagger-ui"
+	"github.com/game1991/layout/helloworld/internal/conf"
+	"github.com/game1991/layout/helloworld/pkg/swagger"
+	swaggerUI "github.com/game1991/layout/helloworld/pkg/swagger-ui"
 
 	"github.com/gin-gonic/gin"
 )

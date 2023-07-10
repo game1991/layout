@@ -5,10 +5,10 @@ import (
 	"errors"
 
 	//"git.xq5.com/office/survey-backend/pkg/captcha"
-	pErrors "git.xq5.com/golang/helloworld/internal/pkg/errors"
-	"git.xq5.com/golang/helloworld/pkg/response"
+	pErrors "github.com/game1991/layout/helloworld/internal/pkg/errors"
+	"github.com/game1991/layout/helloworld/pkg/response"
 
-	pStatus "git.xq5.com/golang/helloworld/pkg/status"
+	pStatus "github.com/game1991/layout/helloworld/pkg/status"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

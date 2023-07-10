@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package helloworld.api.v2;
 
-option go_package = "git.xq5.com/golang/helloworld/api/proto/v2;v2";
+option go_package = "github.com/game1991/layout/helloworld/api/proto/v2;v2";
 
 import "google/api/annotations.proto";
 import "proto/v1/message.greeter.proto";

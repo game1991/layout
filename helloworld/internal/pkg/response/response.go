@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"runtime"
 
-	"git.xq5.com/golang/helloworld/internal/pkg/constant"
-	"git.xq5.com/golang/helloworld/internal/pkg/ecode"
+	"github.com/game1991/layout/helloworld/internal/pkg/constant"
+	"github.com/game1991/layout/helloworld/internal/pkg/ecode"
 
 	"go.uber.org/zap"
 
-	"git.xq5.com/golang/helloworld/pkg/log"
-	"git.xq5.com/golang/helloworld/pkg/response"
+	"github.com/game1991/layout/helloworld/pkg/log"
+	"github.com/game1991/layout/helloworld/pkg/response"
 
 	"github.com/gin-gonic/gin"
 	// "go.uber.org/zap"

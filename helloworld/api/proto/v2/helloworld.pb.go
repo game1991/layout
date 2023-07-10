@@ -7,7 +7,7 @@
 package v2
 
 import (
-	v1 "git.xq5.com/golang/helloworld/api/proto/v1"
+	v1 "github.com/game1991/layout/helloworld/api/proto/v1"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"

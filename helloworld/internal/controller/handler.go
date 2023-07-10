@@ -3,9 +3,9 @@ package controller
 import (
 	"context"
 
-	"git.xq5.com/golang/helloworld/internal/conf"
-	"git.xq5.com/golang/helloworld/internal/middlerware"
-	"git.xq5.com/golang/helloworld/internal/service"
+	"github.com/game1991/layout/helloworld/internal/conf"
+	"github.com/game1991/layout/helloworld/internal/middlerware"
+	"github.com/game1991/layout/helloworld/internal/service"
 
 	"github.com/gin-gonic/gin"
 )

@@ -1,7 +1,7 @@
 syntax = "proto3";
 package conf.api;
 
-option go_package = "git.xq5.com/golang/helloworld/internal/conf;conf";
+option go_package = "github.com/game1991/layout/helloworld/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
 

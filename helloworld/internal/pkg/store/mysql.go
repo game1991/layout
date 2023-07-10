@@ -1,7 +1,7 @@
 package store
 
 import (
-	"git.xq5.com/golang/helloworld/pkg/log"
+	"github.com/game1991/layout/helloworld/pkg/log"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

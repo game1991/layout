@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"git.xq5.com/golang/helloworld/dal/query"
-	pErr "git.xq5.com/golang/helloworld/internal/pkg/errors"
+	"github.com/game1991/layout/helloworld/dal/query"
+	pErr "github.com/game1991/layout/helloworld/internal/pkg/errors"
 )
 
 // Greeter ...

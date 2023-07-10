@@ -5,9 +5,9 @@ import (
 
 	"os"
 
-	"git.xq5.com/golang/helloworld/internal/pkg/env"
-	"git.xq5.com/golang/helloworld/internal/pkg/store"
-	"git.xq5.com/golang/helloworld/pkg/log"
+	"github.com/game1991/layout/helloworld/internal/pkg/env"
+	"github.com/game1991/layout/helloworld/internal/pkg/store"
+	"github.com/game1991/layout/helloworld/pkg/log"
 
 	"github.com/ismdeep/args"
 	"github.com/spf13/viper"

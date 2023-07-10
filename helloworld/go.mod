@@ -1,4 +1,4 @@
-module git.xq5.com/golang/helloworld
+module github.com/game1991/layout/helloworld
 
 go 1.19
 

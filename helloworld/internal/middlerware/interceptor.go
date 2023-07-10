@@ -4,8 +4,8 @@ import (
 	"context"
 	"runtime"
 
-	"git.xq5.com/golang/helloworld/internal/pkg/ecode"
-	"git.xq5.com/golang/helloworld/pkg/log"
+	"github.com/game1991/layout/helloworld/internal/pkg/ecode"
+	"github.com/game1991/layout/helloworld/pkg/log"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"

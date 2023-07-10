@@ -1,6 +1,6 @@
 package ecode
 
-import "git.xq5.com/golang/helloworld/pkg/response"
+import "github.com/game1991/layout/helloworld/pkg/response"
 
 // MsgFlags msg flags
 var MsgFlags = map[int]string{

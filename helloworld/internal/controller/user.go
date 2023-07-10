@@ -1,9 +1,9 @@
 package controller
 
 import (
-	v1 "git.xq5.com/golang/helloworld/api/proto/v1"
-	"git.xq5.com/golang/helloworld/internal/pkg/ecode"
-	"git.xq5.com/golang/helloworld/internal/pkg/response"
+	v1 "github.com/game1991/layout/helloworld/api/proto/v1"
+	"github.com/game1991/layout/helloworld/internal/pkg/ecode"
+	"github.com/game1991/layout/helloworld/internal/pkg/response"
 
 	"github.com/gin-gonic/gin"
 )

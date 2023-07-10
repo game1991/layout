@@ -4,9 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	v1 "git.xq5.com/golang/helloworld/api/proto/v1"
-	"git.xq5.com/golang/helloworld/internal/pkg/response"
-	"git.xq5.com/golang/helloworld/pkg/log"
+	v1 "github.com/game1991/layout/helloworld/api/proto/v1"
+	"github.com/game1991/layout/helloworld/internal/pkg/response"
+	"github.com/game1991/layout/helloworld/pkg/log"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

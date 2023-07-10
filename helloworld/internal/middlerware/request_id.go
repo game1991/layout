@@ -1,7 +1,7 @@
 package middlerware
 
 import (
-	"git.xq5.com/golang/helloworld/pkg/uuid"
+	"github.com/game1991/layout/helloworld/pkg/uuid"
 	"github.com/gin-contrib/requestid"
 	"github.com/gin-gonic/gin"
 )

@@ -1,7 +1,7 @@
 package middlerware
 
 import (
-	pContext "git.xq5.com/golang/helloworld/internal/pkg/context"
+	pContext "github.com/game1991/layout/helloworld/internal/pkg/context"
 	"github.com/gin-gonic/gin"
 )
 

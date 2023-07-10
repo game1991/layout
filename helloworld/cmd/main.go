@@ -1,7 +1,7 @@
 package main
 
 import (
-	"git.xq5.com/golang/helloworld/cmd/api"
+	"github.com/game1991/layout/helloworld/cmd/api"
 
 	"github.com/spf13/cobra"
 )

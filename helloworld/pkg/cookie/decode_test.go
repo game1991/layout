@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"git.xq5.com/golang/helloworld/internal/conf"
+	"github.com/game1991/layout/helloworld/internal/conf"
 	"github.com/gorilla/securecookie"
 )
 

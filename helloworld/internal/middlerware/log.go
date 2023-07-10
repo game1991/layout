@@ -5,7 +5,7 @@ import (
 	"io"
 	"strings"
 
-	"git.xq5.com/golang/helloworld/pkg/log"
+	"github.com/game1991/layout/helloworld/pkg/log"
 	"github.com/gin-contrib/requestid"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
